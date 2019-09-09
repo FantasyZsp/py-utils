@@ -1,3062 +1,874 @@
-swagger: '2.0'
-info:
-  description: 提供权限管理服务
-  version: '2.0'
-  title: Authority Service
-host: 'localhost:8080'
-basePath: /
-tags:
-  - name: Role
-    description: 角色
-  - name: Test
-    description: 测试用例
-  - name: UserGroup
-    description: 用户组
-  - name: Menu
-    description: 菜单
-  - name: Uri
-    description: 接口
-  - name: User
-    description: 用户
-  - name: Account
-    description: 帐户
-  - name: AuthorityBusiness
-    description: 权限管理业务
-  - name: Module
-    description: 功能模块
 paths:
-  /api/account/login:
+  /family/person/listAPP:
     post:
       tags:
-        - Account
-      summary: 用户登录
-      description: '登录所需账户信息。可通过siteId选定登录站点,或者给-1使用上一次登录位置'
-      operationId: loginUsingPOST
-      consumes:
-        - application/json
+        - "all"
+      summary: "zsp获得家长列表"
+      description: ""
       produces:
-        - '*/*'
+      - "application/json"
       parameters:
-        - in: body
-          name: param
-          description: param
-          required: true
-          schema:
-            $ref: '#/definitions/LoginParam'
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/FamilyPersonListParam"
+        description: "获得家长列表查询参数"
       responses:
-        '200':
-          description: OK
+        200:
           schema:
-            $ref: '#/definitions/ResultVOJWTToken'
-        '201':
-          description: Created
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
+           $ref: "#/definitions/FamilyPersonListAPPPage"
+          description: "家长列表"
 
-  '/api/account/login/site/{siteId}':
+  /family/person/listPC:
     post:
       tags:
-        - Account
-      summary: 切换站点
-      operationId: switchSiteUsingPOST
-      consumes:
-        - application/json
+        - "all"
+      summary: "mfh获得家长列表"
+      description: ""
       produces:
-        - '*/*'
+      - "application/json"
       parameters:
-        - name: siteId
-          in: path
-          description: 登录站点id
-          required: true
-          type: integer
-          format: int32
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/FamilyPersonListParam"
+        description: "获得家长列表查询参数"
       responses:
-        '200':
-          description: OK
+        200:
           schema:
-            $ref: '#/definitions/ResultVOJWTToken'
-        '201':
-          description: Created
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
+           $ref: "#/definitions/FamilyPersonListPCPage"
+          description: "家长列表"
 
-  /api/account/register:
-    post:
+  /family/person:
+    get:
       tags:
-        - Account
-      summary: 用户注册(要求分配用户组和角色)
-      operationId: registerUsingPOST
-      consumes:
-        - application/json
+        - "all"
+      summary: "zsp获得家长详情"
+      description: ""
       produces:
-        - '*/*'
+      - "application/json"
       parameters:
-        - in: body
-          name: param
-          description: param
-          required: true
-          schema:
-            $ref: '#/definitions/UserParam'
+      - name: "id"
+        in: "query"
+        required: true
+        type: "string"
+        description: "家长记录id"
       responses:
-        '200':
-          description: OK
+        200:
           schema:
-            $ref: '#/definitions/ResultVOUserWithUserGroupsDTO'
-        '201':
-          description: Created
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-  /api/account/update:
-    put:
-      tags:
-        - Account
-      summary: 更新用户
-      operationId: updateWithRelationshipsUsingPUT
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - in: body
-          name: param
-          description: param
-          required: true
-          schema:
-            $ref: '#/definitions/UserParam'
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOUserWithRelationshipsDTO'
-        '201':
-          description: Created
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-  /api/business/role-management/allocation:
-    put:
-      tags:
-        - AuthorityBusiness
-      summary: 角色管理-功能权限
-      operationId: userGroupTypesUsingPUT
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - in: body
-          name: param
-          description: param
-          required: true
-          schema:
-            $ref: '#/definitions/RoleMenusModulesParam'
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOVoid'
-        '201':
-          description: Created
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-  /api/business/role-management/creation/user-groups/current-site:
-    get:
-      tags:
-        - AuthorityBusiness
-      summary: 角色管理站点列表(创建角色-当前站点)
-      operationId: userGroupsOnRoleUsingGET
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOListUserGroupDTO'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-  '/api/business/role-management/creation/user-groups/{siteId}':
-    get:
-      tags:
-        - AuthorityBusiness
-      summary: 角色管理站点列表(创建角色)
-      operationId: userGroupsOnRoleUsingGET_1
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: siteId
-          in: path
-          description: siteId
-          required: true
-          type: integer
-          format: int32
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOListUserGroupDTO'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-  /api/business/role-management/menu-module-tree:
-    get:
-      tags:
-        - AuthorityBusiness
-      summary: 功能权限树
-      operationId: userGroupTypesUsingGET
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: siteId
-          in: query
-          description: siteId
-          required: false
-          type: integer
-          format: int32
-        - name: roleId
-          in: query
-          description: roleId
-          required: false
-          type: integer
-          format: int32
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOListMenuWithModuleDTO'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-  /api/business/user-group-management/creation/user-groups/current-user:
-    get:
-      tags:
-        - AuthorityBusiness
-      summary: 组织管理组织列表(创建组织)
-      operationId: userGroupsOnUGUsingGET
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOListUserGroupDTO'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-  /api/business/user-group-management/user-groups/current-user:
-    get:
-      tags:
-        - AuthorityBusiness
-      summary: 组织管理组织列表(当前登录用户)
-      operationId: userGroupsUsingGET
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOListUserGroupDTO'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-  /api/business/user-group-management/user-groups/login-list:
-    get:
-      tags:
-        - AuthorityBusiness
-      summary: 用户登录站点列表
-      operationId: userGroupsOnLoginUsingGET
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: username
-          in: query
-          description: username
-          required: false
-          type: string
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOListLoginSiteListVO'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-  '/api/business/user-group-management/user-groups/{userId}':
-    get:
-      tags:
-        - AuthorityBusiness
-      summary: 组织管理组织列表(指定用户)
-      operationId: userGroupsUsingGET_1
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: userId
-          in: path
-          description: userId
-          required: true
-          type: integer
-          format: int32
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOListUserGroupDTO'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-  /api/business/user-groups/user-group-types:
-    get:
-      tags:
-        - AuthorityBusiness
-      summary: 用户组织类型
-      operationId: userGroupTypesUsingGET_1
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOMapstringint'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-  /api/business/user-management/creation/roles:
-    get:
-      tags:
-        - AuthorityBusiness
-      summary: 用户管理角色列表(创建用户)
-      operationId: rolesOnUserUsingGET
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: siteIds
-          in: query
-          description: siteIds
-          required: true
-          type: string
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOListUserGroupWithRoleDTO'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-  '/api/business/user-management/creation/user-groups/{siteId}':
-    get:
-      tags:
-        - AuthorityBusiness
-      summary: 用户管理组织列表(创建用户)
-      operationId: userGroupsOnUserUsingGET
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: siteId
-          in: path
-          description: siteId
-          required: true
-          type: integer
-          format: int32
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOListLoginSiteListVO'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-  /api/business/user-management/user-groups/current-user:
-    get:
-      tags:
-        - AuthorityBusiness
-      summary: 用户管理组织列表
-      operationId: userGroupListUsingGET
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOListUserGroupDTO'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-  '/api/business/user-management/user-groups/{userId}':
-    get:
-      tags:
-        - AuthorityBusiness
-      summary: 用户管理组织列表
-      operationId: userGroupListUsingGET_1
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: userId
-          in: path
-          description: userId
-          required: true
-          type: integer
-          format: int32
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOListUserGroupDTO'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-  /api/me/authentication:
-    get:
-      tags:
-        - Account
-      summary: 查询当前登录用户认证信息(测试用)
-      operationId: getAuthenticationUsingGET
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      responses:
-        '200':
-          description: OK
-          schema:
-            type: object
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-  /api/menus:
-    post:
-      tags:
-        - Menu
-      summary: 创建一个菜单
-      operationId: createUsingPOST
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - in: body
-          name: param
-          description: param
-          required: true
-          schema:
-            $ref: '#/definitions/MenuParam'
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOMenuDTO'
-        '201':
-          description: Created
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
+           $ref: "#/definitions/FamilyPersonDto"
+          description: "家长详情"
 
     put:
       tags:
-        - Menu
-      summary: 更新菜单
-      operationId: updateUsingPUT
-      consumes:
-        - application/json
+        - "all"
+      summary: "mfh修改家长详情"
+      description: "1.note最多200"
       produces:
-        - '*/*'
+      - "application/json"
       parameters:
-        - in: body
-          name: param
-          description: param
-          required: true
-          schema:
-            $ref: '#/definitions/MenuParam'
-        - name: is_need_children
-          in: query
-          description: is_need_children
-          required: true
-          type: boolean
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/FamilyPersonPutDto"
+        description: "家长详情"
       responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOMenuDTO'
-        '201':
-          description: Created
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
+        200:
+          description: "操作成功"
 
-  /api/menus/tree:
+  /family/person/student:
     get:
       tags:
-        - Menu
-      summary: 获取所有菜单(Tree)
-      operationId: getAllTreeUsingGET
-      consumes:
-        - application/json
+        - "all"
+      summary: "zsp获得家长的学员列表"
+      description: ""
       produces:
-        - '*/*'
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOListMenuDTO'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-  '/api/menus/user-groups/{userGroupId}':
-    get:
-      tags:
-        - Menu
-      summary: 根据站点id获取菜单
-      operationId: getListByUserGroupIdUsingGET
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
+      - "application/json"
       parameters:
-        - name: userGroupId
-          in: path
-          description: userGroupId
-          required: true
-          type: integer
-          format: int32
+      - name: "id"
+        in: "query"
+        required: true
+        type: "string"
+        description: "家长记录id"
       responses:
-        '200':
-          description: OK
+        200:
           schema:
-            $ref: '#/definitions/ResultVOListMenuDTO'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-  '/api/menus/user-groups/{userGroupId}/roles/{roleId}':
-    get:
-      tags:
-        - Menu
-      summary: 根据站点id角色id获取菜单
-      operationId: getListByUserGroupIdAndRoleIdUsingGET
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: userGroupId
-          in: path
-          description: userGroupId
-          required: true
-          type: integer
-          format: int32
-        - name: roleId
-          in: path
-          description: roleId
-          required: true
-          type: integer
-          format: int32
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOListMenuDTO'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-  '/api/menus/user-groups/{userGroupId}/roles/{roleId}/tree':
-    get:
-      tags:
-        - Menu
-      summary: 根据站点id角色id获取菜单(Tree)
-      operationId: getListTreeByUserGroupIdAndRoleIdUsingGET
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: userGroupId
-          in: path
-          description: userGroupId
-          required: true
-          type: integer
-          format: int32
-        - name: roleId
-          in: path
-          description: roleId
-          required: true
-          type: integer
-          format: int32
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOListMenuDTO'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-  '/api/menus/user-groups/{userGroupId}/tree':
-    get:
-      tags:
-        - Menu
-      summary: 根据站点id获取菜单(Tree)
-      operationId: getListTreeByUserGroupIdUsingGET
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: userGroupId
-          in: path
-          description: userGroupId
-          required: true
-          type: integer
-          format: int32
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOListMenuDTO'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-  '/api/menus/user-groups/{userGroupId}/users/{userId}':
-    get:
-      tags:
-        - Menu
-      summary: 根据站点id用户id获取菜单
-      operationId: getListByUserGroupIdAndUserIdUsingGET
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: userGroupId
-          in: path
-          description: userGroupId
-          required: true
-          type: integer
-          format: int32
-        - name: userId
-          in: path
-          description: userId
-          required: true
-          type: integer
-          format: int32
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOListMenuDTO'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-  '/api/menus/user-groups/{userGroupId}/users/{userId}/tree':
-    get:
-      tags:
-        - Menu
-      summary: 根据站点id用户id获取菜单(Tree)
-      operationId: getListTreeByUserGroupIdAndUserIdUsingGET
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: userGroupId
-          in: path
-          description: userGroupId
-          required: true
-          type: integer
-          format: int32
-        - name: userId
-          in: path
-          description: userId
-          required: true
-          type: integer
-          format: int32
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOListMenuDTO'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-  '/api/menus/{id}':
-    get:
-      tags:
-        - Menu
-      summary: 根据id获取菜单
-      operationId: getMenuUsingGET
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: id
-          in: path
-          description: id
-          required: true
-          type: integer
-          format: int32
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOMenuDTO'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-    delete:
-      tags:
-        - Menu
-      summary: 根据id删除菜单
-      operationId: deleteMenuUsingDELETE
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: id
-          in: path
-          description: id
-          required: true
-          type: integer
-          format: int32
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOVoid'
-        '204':
-          description: No Content
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-
-  '/api/menus/{id}/children-tree':
-    get:
-      tags:
-        - Menu
-      summary: 根据id获取菜单子孙菜单(Tree)
-      operationId: getChildrenTreeUsingGET
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: id
-          in: path
-          description: id
-          required: true
-          type: integer
-          format: int32
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOListMenuDTO'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-  '/api/menus/{id}/with-children-tree':
-    get:
-      tags:
-        - Menu
-      summary: 根据id获取菜单及子孙菜单(Tree)
-      operationId: getWithChildrenTreeUsingGET
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: id
-          in: path
-          description: id
-          required: true
-          type: integer
-          format: int32
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOMenuDTO'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-  /api/modules:
-    post:
-      tags:
-        - Module
-      summary: 创建功能模块
-      operationId: createUsingPOST_1
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - in: body
-          name: param
-          description: param
-          required: true
-          schema:
-            $ref: '#/definitions/ModuleParam'
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOModuleDTO'
-        '201':
-          description: Created
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-    put:
-      tags:
-        - Module
-      summary: 更新功能模块
-      operationId: updateUsingPUT_1
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - in: body
-          name: param
-          description: param
-          required: true
-          schema:
-            $ref: '#/definitions/ModuleParam'
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOModuleDTO'
-        '201':
-          description: Created
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-  '/api/modules/{id}':
-    get:
-      tags:
-        - Module
-      summary: 查询功能模块
-      operationId: getModuleUsingGET
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: id
-          in: path
-          description: id
-          required: true
-          type: integer
-          format: int32
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOModuleDTO'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-    delete:
-      tags:
-        - Module
-      summary: 删除功能模块
-      operationId: deleteModuleUsingDELETE
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: id
-          in: path
-          description: id
-          required: true
-          type: integer
-          format: int32
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOVoid'
-        '204':
-          description: No Content
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-
-  /api/roles:
-    post:
-      tags:
-        - Role
-      summary: 创建角色并分配用户组(站点)
-      operationId: createRoleUsingPOST
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - in: body
-          name: param
-          description: param
-          required: true
-          schema:
-            $ref: '#/definitions/RoleParam'
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVORoleDTO'
-        '201':
-          description: Created
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-    put:
-      tags:
-        - Role
-      summary: 更新角色(支持变更UserGroup)
-      operationId: updateRoleWithUserGroupUsingPUT
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - in: body
-          name: param
-          description: param
-          required: true
-          schema:
-            $ref: '#/definitions/RoleParam'
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVORoleDTO'
-        '201':
-          description: Created
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-  '/api/roles/user-groups/{userGroupId}':
-    get:
-      tags:
-        - Role
-      summary: 查询某站点下角色列表
-      operationId: getRolesByUserGroupIdUsingGET
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: userGroupId
-          in: path
-          description: userGroupId
-          required: true
-          type: integer
-          format: int32
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOListRoleSimpleVO'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-  '/api/roles/user-groups/{userGroupId}/users/{userId}':
-    get:
-      tags:
-        - Role
-      summary: 查询某站点下某用户的角色列表
-      operationId: getRolesByUserGroupIdAndUserIdUsingGET
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: userGroupId
-          in: path
-          description: userGroupId
-          required: true
-          type: integer
-          format: int32
-        - name: userId
-          in: path
-          description: userId
-          required: true
-          type: integer
-          format: int32
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOListRoleSimpleVO'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-  '/api/roles/users/{userId}':
-    get:
-      tags:
-        - Role
-      summary: 根据用户id获取角色列表
-      operationId: getRolesByUserIdUsingGET
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: userId
-          in: path
-          description: userId
-          required: true
-          type: integer
-          format: int32
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOListRoleSimpleVO'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-  '/api/roles/{id}':
-    delete:
-      tags:
-        - Role
-      summary: 根据角色id删除角色
-      operationId: deleteRoleUsingDELETE
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: id
-          in: path
-          description: id
-          required: true
-          type: integer
-          format: int32
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOVoid'
-        '204':
-          description: No Content
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-
-  '/api/test/query/2/{userGroupId}':
-    get:
-      tags:
-        - Test
-      summary: 测试联合查询
-      operationId: query2UsingGET
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: userGroupId
-          in: path
-          description: userGroupId
-          required: true
-          type: integer
-          format: int32
-      responses:
-        '200':
-          description: OK
-          schema:
-            type: array
+            type: "array"
             items:
-              $ref: '#/definitions/UserWithRoleVO'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
+              $ref: "#/definitions/FamilyStudentDto"
+          description: "学员列表"
 
-  '/api/test/system/uris/moduleId/{moduleId}':
+  /family/person/transfer:
     post:
       tags:
-        - Test
-      summary: 存储系统所有uri到指定权限模块
-      operationId: persistUriListUsingPOST
-      consumes:
-        - application/json
+        - "all"
+      summary: "zsp家长转让"
+      description: ""
       produces:
-        - '*/*'
+      - "application/json"
       parameters:
-        - name: moduleId
-          in: path
-          description: moduleId
-          required: true
-          type: integer
-          format: int32
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/FamilyPersonTransferParam"
+        description: "家长转让"
       responses:
-        '200':
-          description: OK
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/UriDTO'
-        '201':
-          description: Created
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
+        200:
+          description: "操作成功"
 
-  /api/test/system/uris/test/uris:
-    get:
-      tags:
-        - Test
-      summary: 生成uri列表
-      operationId: generateUriListUsingGET
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      responses:
-        '200':
-          description: OK
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/Mapstringstring'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-  '/api/uris/sites/{siteId}':
-    get:
-      tags:
-        - Uri
-      summary: 根据站点id获取Uri列表
-      operationId: findBySiteIdUsingGET
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: siteId
-          in: path
-          description: siteId
-          required: true
-          type: integer
-          format: int32
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOListUriDTO'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-  /api/user-groups:
+  /family/person/share:
     post:
       tags:
-        - UserGroup
-      summary: 创建一个用户组
-      operationId: createUsingPOST_2
-      consumes:
-        - application/json
+        - "all"
+      summary: "mfh家长共享"
+      description: ""
       produces:
-        - '*/*'
+      - "application/json"
       parameters:
-        - in: body
-          name: param
-          description: param
-          required: true
-          schema:
-            $ref: '#/definitions/UserGroupParam'
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/FamilyPersonShareParam"
+        description: "家长共享"
       responses:
-        '200':
-          description: OK
+        200:
+          description: "操作成功"
+
+  /family/person/del:
+    post:
+      tags:
+        - "all"
+      summary: "mfh家长放弃"
+      description: ""
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/FamilyPersonDelParam"
+        description: "家长放弃"
+      responses:
+        200:
+          description: "操作成功"
+
+  /family/person/call:
+    get:
+      tags:
+        - "all"
+      summary: "mfh员工联系家长记录list"
+      description: ""
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "query"
+        required: true
+        type: "string"
+        description: "家长记录id"
+      responses:
+        200:
           schema:
-            $ref: '#/definitions/ResultVOUserGroupDTO'
-        '201':
-          description: Created
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
+            type: "array"
+            items:
+              $ref: "#/definitions/FamilyPersonCallDto"
+          description: "联系记录"
+
+    post:
+      tags:
+        - "app"
+      summary: "mfh员工联系家长"
+      description: ""
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/FamilyPersonCallParam"
+        description: "联系记录"
+      responses:
+        200:
+          description: "操作成功"
+
+  /family/person/signs:
+    get:
+      tags:
+        - "all"
+      summary: "zsp获得家长标签和备注标签"
+      description: "mfh"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "query"
+        required: true
+        type: "string"
+        description: "家长记录id"
+      responses:
+        200:
+          schema:
+            $ref: "#/definitions/FamilySignsDto"
+          description: "家长标签详情"
 
     put:
       tags:
-        - UserGroup
-      summary: 更新用户组(支持调整所属部门)
-      operationId: updateUsingPUT_2
-      consumes:
-        - application/json
+        - "all"
+      summary: "zsp修改家长标签"
+      description: ""
       produces:
-        - '*/*'
+      - "application/json"
       parameters:
-        - in: body
-          name: param
-          description: param
-          required: true
-          schema:
-            $ref: '#/definitions/UserGroupParam'
-        - name: is_need_children
-          in: query
-          description: is_need_children
-          required: true
-          type: boolean
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/FamilySignsParam"
       responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOUserGroupDTO'
-        '201':
-          description: Created
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
+        200:
+          description: "操作成功"
 
-  /api/user-groups/current/with-children:
+  /family/person/signs-remark:
+    put:
+      tags:
+        - "all"
+      summary: "mfh修改家长备注标签"
+      description: ""
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/FamilySignsRemarkParam"
+      responses:
+        200:
+          description: "操作成功"
+
+  /family/person/record:
     get:
       tags:
-        - UserGroup
-      summary: 获取当前用户组及子孙组
-      operationId: getCurrentWithChildrenUsingGET
-      consumes:
-        - application/json
+        - "pc"
+      summary: "zsp获得家长操作记录"
+      description: ""
       produces:
-        - '*/*'
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "query"
+        required: true
+        type: "string"
+        description: "家长记录id"
       responses:
-        '200':
-          description: OK
+        200:
           schema:
-            $ref: '#/definitions/ResultVOListUserGroupDTO'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
+            type: "array"
+            items:
+              $ref: "#/definitions/FamilyPersonRecordDto"
+          description: "家长记录列表"
 
-  /api/user-groups/tree:
+  /user/tenant/search-name:
     get:
       tags:
-        - UserGroup
-      summary: 获取所有用户组(Tree)
-      operationId: getAllTreeUsingGET_1
-      consumes:
-        - application/json
+        - "pc"
+      summary: "mfh获得该子机构的所有正式员工"
+      description: ""
       produces:
-        - '*/*'
+      - "application/json"
+      parameters:
+      - name: "name"
+        in: "query"
+        required: true
+        type: "string"
+        description: "员工名称"
       responses:
-        '200':
-          description: OK
+        200:
           schema:
-            $ref: '#/definitions/ResultVOListUserGroupDTO'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
+            type: "array"
+            items:
+              $ref: "#/definitions/SearchNameDto"
+          description: "模糊搜索数据"
 
-  '/api/user-groups/{id}':
+  /config/tag-group/all-visible:
     get:
       tags:
-        - UserGroup
-      summary: 根据id获取用户组
-      operationId: getUserGroupUsingGET
-      consumes:
-        - application/json
+        - "all"
+      summary: "zsp获取所有可用标签分组列表"
+      description: ""
       produces:
-        - '*/*'
+      - "application/json"
       parameters:
-        - name: id
-          in: path
-          description: id
-          required: true
-          type: integer
-          format: int32
+      - name: "type"
+        in: "query"
+        required: true
+        type: "string"
+        description: "标签类型，1学生2家长"
       responses:
-        '200':
-          description: OK
+        200:
           schema:
-            $ref: '#/definitions/ResultVOUserGroupDTO'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
+            type: "array"
+            items:
+              $ref: "#/definitions/ConfigTagGroupInfoDto"
+          description: "标签数据"
 
-    delete:
-      tags:
-        - UserGroup
-      summary: 根据id删除用户组
-      operationId: deleteUserGroupUsingDELETE
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: id
-          in: path
-          description: id
-          required: true
-          type: integer
-          format: int32
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOVoid'
-        '204':
-          description: No Content
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-
-  '/api/user-groups/{id}/children-tree':
+  /test/userorgid:
     get:
-      tags:
-        - UserGroup
-      summary: 根据id获取用户组子孙组(Tree)
-      operationId: getChildrenTreeUsingGET_1
-      consumes:
-        - application/json
+      summary: "获得自己的邀请码"
+      description: ""
       produces:
-        - '*/*'
-      parameters:
-        - name: id
-          in: path
-          description: id
-          required: true
-          type: integer
-          format: int32
+      - "application/json"
       responses:
-        '200':
-          description: OK
+        200:
           schema:
-            $ref: '#/definitions/ResultVOListUserGroupDTO'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
+            $ref: "#/definitions/TestLevelDto"
+          description: "ok"
 
-  '/api/user-groups/{id}/with-children':
-    get:
-      tags:
-        - UserGroup
-      summary: 根据id获取用户组及子孙组
-      operationId: getWithChildrenUsingGET
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: id
-          in: path
-          description: id
-          required: true
-          type: integer
-          format: int32
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOListUserGroupDTO'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-  '/api/user-groups/{id}/with-children-tree':
-    get:
-      tags:
-        - UserGroup
-      summary: 根据id获取用户组及子孙组(Tree)
-      operationId: getWithChildrenTreeUsingGET_1
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: id
-          in: path
-          description: id
-          required: true
-          type: integer
-          format: int32
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOUserGroupDTO'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-  '/api/users/roles/{roleId}':
-    get:
-      tags:
-        - User
-      summary: 根据角色id获取用户列表
-      operationId: getUsersByRoleIdUsingGET
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: roleId
-          in: path
-          description: roleId
-          required: true
-          type: integer
-          format: int32
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOListUserSimpleVO'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-  '/api/users/user-groups/{userGroupId}':
-    get:
-      tags:
-        - User
-      summary: 根据用户组id获取用户列表
-      operationId: getUsersByUserGroupIdUsingGET
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: userGroupId
-          in: path
-          description: userGroupId
-          required: true
-          type: integer
-          format: int32
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOListUserSimpleVO'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-  '/api/users/{id}':
-    get:
-      tags:
-        - User
-      summary: 根据用户id获取用户信息
-      operationId: getUserWithRelationshipsUsingGET
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: id
-          in: path
-          description: id
-          required: true
-          type: integer
-          format: int32
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOUserWithRelationshipsDTO'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-
-    delete:
-      tags:
-        - User
-      summary: 根据用户id删除用户
-      operationId: deleteUserUsingDELETE
-      consumes:
-        - application/json
-      produces:
-        - '*/*'
-      parameters:
-        - name: id
-          in: path
-          description: id
-          required: true
-          type: integer
-          format: int32
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/ResultVOVoid'
-        '204':
-          description: No Content
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-
-securityDefinitions:
-  Authorization:
-    type: apiKey
-    name: Authorization
-    in: header
 definitions:
-  JWTToken:
-    type: object
-    required:
-      - idToken
+  TestLevelDto:
     properties:
-      idToken:
-        type: string
-        example: xxxxxxxxxxxx
-        description: token字符串
-    description: token
-  LevelDTO:
-    type: object
-    properties:
-      createdBy:
-        type: string
-      createdTime:
-        type: string
-        format: date-time
       id:
-        type: integer
-        format: int32
-        description: 自增id
-      lastModifiedBy:
-        type: string
-      lastModifiedTime:
-        type: string
-        format: date-time
-      level:
-        type: string
-        description: 层级
-      operateIp:
-        type: string
-      parentId:
-        type: integer
-        format: int32
-        description: 父级id
-      remark:
-        type: string
-      sequence:
-        type: integer
-        format: int32
-        description: 排序序列
-      subLevelDTOs:
-        type: array
-        description: 子级
+        type: "string"
+        description: "邀请码"
+  FamilyPersonListParam:
+    description: "获得家长列表查询参数"
+    properties:
+      signedType:
+        type: "string"
+        description: "签约类型（已签约：signed，未签约：unsigned）"
+      familyName:
+        type: "string"
+        description: "家长名称搜索"
+      signs:
+        type: "string"
+        description: "筛选标签的对象，{标签组id，[选中标签列表id]}"
+      sharer:
+        type: "string"
+        description: "共享关系"
+      action:
+        type: "string"
+        description: "动作（transfer：转让、share：分享、delete：放弃）"
+      orders:
+        type: "string"
+        description: "排序条件(入库时间：intoASC,intoDESC；跟进次数：followCountASC,followCountDESC；跟进时间：followTimeASC,followTimeDESC；
+        签约时间：signedTimeASC，signedTimeDESC；返回公共库：countdownASC,countdownDESC；录入时间：createdAtASC,createdAtDESC；
+        最新变动时间：newestTimeASC,newestTimeDESC)"
+      page:
+        type: "integer"
+        description: "页码"
+      size:
+        type: "integer"
+        description: "数量"
+
+  FamilyPersonListAPPPage:
+    type: "object"
+    properties:
+      data:
+        type: "array"
         items:
-          $ref: '#/definitions/LevelDTO'
-    description: 层级抽象实体
-  LoginParam:
-    type: object
-    required:
-      - account
-      - password
-      - siteId
+          $ref: '#/definitions/FamilyPersonListAPPDto'
+        description: "APP分页返回的构造对象"
+      total:
+        type: "integer"
+
+  FamilyPersonListAPPDto:
+    description: "家长列表"
     properties:
-      account:
-        type: string
-        example: test
-        description: 账号
-      password:
-        type: string
-        example: '123456'
-        description: 密码
-      siteId:
-        type: integer
-        format: int32
-        example: -1
-        description: '登录站点,值为-1则按照上一次登录位置登录'
-    description: '登录所需账户信息。可通过siteId选定登录站点,或者给-1使用上一次登录位置'
-  LoginSiteListVO:
-    type: object
-    properties:
-      companyName:
-        type: string
-      sites:
-        type: array
-        items:
-          $ref: '#/definitions/UserGroupDTO'
-  'Mapstringint':
-    type: object
-  'Mapstringstring':
-    type: object
-    additionalProperties:
-      type: string
-  MenuDTO:
-    type: object
-    required:
-      - externalLink
-      - hide
-      - i18n
-      - icon
-      - link
-      - linkExact
-      - name
-      - target
-      - text
-      - userGroupId
-    properties:
-      createdBy:
-        type: string
-      createdTime:
-        type: string
-        format: date-time
-      externalLink:
-        type: string
-        description: 外部链接
-      hide:
-        type: boolean
-        example: false
-        description: '是否隐藏分组名,默认显示(false)'
-      i18n:
-        type: string
-        description: i18n主键
-      icon:
-        type: string
-        description: 图标
       id:
-        type: integer
-        format: int32
-        description: 自增id
-      lastModifiedBy:
-        type: string
-      lastModifiedTime:
-        type: string
-        format: date-time
-      level:
-        type: string
-        description: 层级
-      link:
-        type: string
-        description: 路由
-      linkExact:
-        type: boolean
-        example: false
-        description: 路由是否精准匹配。默认false
+        type: "string"
+        description: "主键"
+      avatar:
+        type: "string"
+        description: "家长头像"
       name:
-        type: string
-        description: 菜单名字
-      operateIp:
-        type: string
-      parentId:
-        type: integer
-        format: int32
-        description: 父级id
-      remark:
-        type: string
-      sequence:
-        type: integer
-        format: int32
-        description: 排序序列
-      subLevelDTOs:
-        type: array
-        description: 子级
-        items:
-          $ref: '#/definitions/LevelDTO'
-      target:
-        type: string
-        description: 链接
-      text:
-        type: string
-        description: 文本
-      userGroupId:
-        type: integer
-        format: int32
-        description: 用户组id
-    description: 层级抽象实体
-  MenuParam:
-    type: object
-    required:
-      - externalLink
-      - hide
-      - i18n
-      - icon
-      - link
-      - linkExact
-      - name
-      - parentId
-      - remark
-      - sequence
-      - target
-      - text
-      - userGroupId
+        type: "string"
+        description: "家长名称"
+      phone:
+        type: "string"
+        description: "家长电话"
+      owner:
+        type: "string"
+        description: "负责人"
+      sharer:
+        type: "string"
+        description: "共享人"
+      followTime:
+        type: "string"
+        description: "最新跟进时间"
+
+  FamilyPersonListPCPage:
+    type: "object"
     properties:
-      externalLink:
-        type: string
-        description: 外部链接
-      hide:
-        type: boolean
-        example: false
-        description: '是否隐藏分组名,默认显示(false)'
-      i18n:
-        type: string
-        description: i18n主键
-      icon:
-        type: string
-        description: 图标
+      data:
+        type: "array"
+        items:
+          $ref: '#/definitions/FamilyPersonListPCDto'
+        description: "APP分页返回的构造对象"
+      total:
+        type: "integer"
+
+  FamilyPersonListPCDto:
+    description: "家长列表"
+    properties:
       id:
-        type: integer
-        format: int32
-      link:
-        type: string
-        description: 路由
-      linkExact:
-        type: boolean
-        example: false
-        description: 路由是否精准匹配。默认false
+        type: "string"
+        description: "主键"
+      avatar:
+        type: "string"
+        description: "家长头像"
       name:
-        type: string
-        description: 菜单名称
-      parentId:
-        type: integer
-        format: int32
-        description: '父级id。如果是顶级,填0'
+        type: "string"
+        description: "家长名称"
+      phone:
+        type: "string"
+        description: "家长电话"
+      isRegister:
+        type: "string"
+        description: "是否注册app"
+      otherPhone:
+        type: "string"
+        description: "备用电话"
+      createdAt:
+        type: "string"
+        description: "录入时间"
+      intoTime:
+        type: "string"
+        description: "入库时间"
+      signedTime:
+        type: "string"
+        description: "签约时间"
+      parentTags:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            name:
+              type: "string"
+              description: "标签名称"
+            style:
+              type: "string"
+              description: "所属标签组的style"
+        description: "标签数组（最新的两个）"
+      parentRemarkTag:
+        type: "array"
+        items:
+          type: "string"
+        description: "家长备注标签"
       remark:
-        type: string
-        description: 备注
-      sequence:
-        type: integer
-        format: int32
-        description: 展示顺序
-      target:
-        type: string
-        description: 链接
-      text:
-        type: string
-        description: 文本
-      userGroupId:
-        type: integer
-        format: int32
-        description: 用户组id
-    description: 菜单参数
-  MenuWithModuleDTO:
-    type: object
-    required:
-      - externalLink
-      - hide
-      - i18n
-      - icon
-      - link
-      - linkExact
-      - name
-      - target
-      - text
-      - userGroupId
+        type: "string"
+        description: "备注"
+      infoFrom:
+        type: "string"
+        description: "信息来源"
+      countdown:
+        type: "integer"
+        description: "返回公共库倒计时（单位：小时）"
+      owner:
+        type: "object"
+        properties:
+          id:
+            type: "string"
+            description: "用户id"
+          name:
+            type: "string"
+            description: "用户名称"
+          avatar:
+            type: "string"
+            description: "用户头像地址"
+        description: "负责人"
+      sharer:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            id:
+              type: "string"
+              description: "用户id"
+            name:
+              type: "string"
+              description: "用户名称"
+            avatar:
+              type: "string"
+              description: "用户头像地址(通常只有注册用户自己上传时才有)"
+          description: "共享人（最多两个）"
+      newestTime:
+        type: "string"
+        description: "最新变动时间"
+      newestAction:
+        type: "string"
+        description: "最新变动动作"
+      followTime:
+        type: "string"
+        description: "最新跟进时间"
+      followCount:
+        type: "string"
+        description: "最新跟进数"
+      followAtion:
+        type: "string"
+        description: "最新跟进动作"
+      follower:
+        type: "string"
+        description: "最新跟进人"
+      orgName:
+        type: "string"
+        description: "所属子机构（名称）"
+
+  FamilyPersonTransferParam:
     properties:
-      createdBy:
-        type: string
-      createdTime:
-        type: string
-        format: date-time
-      externalLink:
-        type: string
-        description: 外部链接
-      hasAccess:
-        type: boolean
-        example: false
-        description: 当前操作者是否有此角色分配权限
-      hide:
-        type: boolean
-        example: false
-        description: '是否隐藏分组名,默认显示(false)'
-      i18n:
-        type: string
-        description: i18n主键
-      icon:
-        type: string
-        description: 图标
+      ids:
+        type: "array"
+        items:
+          type: "string"
+        description: "家长记录id"
+      reason:
+        type: "string"
+        description: "转让原因"
+      remark:
+        type: "string"
+        description: "备注"
+      userId:
+        type: "string"
+        description: "转让人id"
+
+  FamilyPersonShareParam:
+    properties:
+      ids:
+        type: "array"
+        items:
+          type: "string"
+        description: "家长记录id"
+      userIds:
+        type: "array"
+        items:
+          type: "string"
+        description: "共享人id"
+
+  FamilyPersonDelParam:
+    properties:
+      ids:
+        type: "array"
+        items:
+          type: "string"
+        description: "家长记录id"
+      remark:
+        type: "string"
+        description: "备注"
+      isValid:
+        type: "boolean"
+        description: "是否有效的"
+      reason:
+        type: "string"
+        description: "原因"
+
+  FamilyPersonCallParam:
+    properties:
       id:
-        type: integer
-        format: int32
-        description: 自增id
-      isSelected:
-        type: boolean
-        example: false
-        description: 当前选定角色是否已经拥有
-      lastModifiedBy:
-        type: string
-      lastModifiedTime:
-        type: string
-        format: date-time
-      level:
-        type: string
-        description: 层级
-      link:
-        type: string
-        description: 路由
-      linkExact:
-        type: boolean
-        example: false
-        description: 路由是否精准匹配。默认false
-      modules:
-        type: array
-        items:
-          $ref: '#/definitions/ModuleWithCheckDTO'
-      name:
-        type: string
-        description: 菜单名字
-      operateIp:
-        type: string
-      parentId:
-        type: integer
-        format: int32
-        description: 父级id
-      remark:
-        type: string
-      sequence:
-        type: integer
-        format: int32
-        description: 排序序列
-      subLevelDTOs:
-        type: array
-        description: 子级
-        items:
-          $ref: '#/definitions/LevelDTO'
-      target:
-        type: string
-        description: 链接
-      text:
-        type: string
-        description: 文本
-      userGroupId:
-        type: integer
-        format: int32
-        description: 用户组id
-    description: 菜单对象(权限检查)
-  MenuWithModuleIds:
-    type: object
+        type: "string"
+        description: "家长记录id"
+      duration:
+        type: "integer"
+        description: "通话时长（单位：秒）"
+
+  FamilyPersonCallDto:
     properties:
-      menuId:
-        type: integer
-        format: int32
-      moduleIds:
-        type: array
-        items:
-          type: integer
-          format: int32
-  ModuleDTO:
-    type: object
-    properties:
-      code:
-        type: string
-      createdBy:
-        type: string
-      createdTime:
-        type: string
-        format: date-time
       id:
-        type: integer
-        format: int32
-      lastModifiedBy:
-        type: string
-      lastModifiedTime:
-        type: string
-        format: date-time
+        type: "string"
+        description: "联系记录"
+      duration:
+        type: "integer"
+        description: "通话时长（单位：秒）"
       name:
-        type: string
-      operateIp:
-        type: string
-      remark:
-        type: string
-      status:
-        type: integer
-        format: int32
-      userGroupId:
-        type: integer
-        format: int32
-  ModuleParam:
-    type: object
-    required:
-      - code
-      - name
-      - remark
+        type: "string"
+        description: "员工名称"
+      phone:
+        type: "string"
+        description: "家长手机号"
+      createdAt:
+        type: "string"
+        description: "联系时间"
+
+  FamilyPersonDto:
     properties:
-      code:
-        type: string
-        description: 权限模块名称
+      owner:
+        type: "object"
+        properties:
+          id:
+            type: "string"
+            description: "用户id"
+          name:
+            type: "string"
+            description: "用户名称"
+          avatar:
+            type: "string"
+            description: "用户头像地址"
+        description: "负责人"
+      sharer:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            id:
+              type: "string"
+              description: "用户id"
+            name:
+              type: "string"
+              description: "用户名称"
+            avatar:
+              type: "string"
+              description: "用户头像地址"
+          description: "共享人（最多两个）"
+      family:
+        type: "object"
+        properties:
+          id:
+            type: "string"
+            description: "主键"
+          name:
+            type: "string"
+            description: "家长名称"
+          avatar:
+            type: "string"
+            description: "家长头像"
+          registerName:
+            type: "string"
+            description: "家长注册名称"
+          phone:
+            type: "string"
+            description: "手机号码"
+          backPhone:
+            type: "string"
+            description: "备用电话"
+          address:
+            type: "string"
+            description: "家庭地址"
+          workName:
+            type: "string"
+            description: "工作单位"
+          position:
+            type: "string"
+            description: "职位"
+          edu:
+            type: "string"
+            description: "学历"
+          degree:
+            type: "string"
+            description: "学位"
+          note:
+            type: "string"
+            description: "备注"
+
+  FamilyPersonPutDto:
+    properties:
       id:
-        type: integer
-        format: int32
-        description: 主键
-      menuIds:
-        type: array
-        items:
-          type: integer
-          format: int32
+        type: "string"
+        description: "主键"
       name:
-        type: string
-        description: 权限模块名称
-      remark:
-        type: string
-        description: 备注
-      status:
-        type: integer
-        format: int32
-      uriIds:
-        type: array
-        items:
-          type: integer
-          format: int32
-      userGroupId:
-        type: integer
-        format: int32
-    description: 修改权限模块参数
-  ModuleWithCheckDTO:
-    type: object
+        type: "string"
+        description: "家长名称"
+      backPhone:
+        type: "string"
+        description: "备用电话"
+      address:
+        type: "string"
+        description: "家庭地址"
+      workName:
+        type: "string"
+        description: "工作单位"
+      position:
+        type: "string"
+        description: "职位"
+      edu:
+        type: "string"
+        description: "学历"
+      degree:
+        type: "string"
+        description: "学位"
+      note:
+        type: "string"
+        description: "备注"
+
+  FamilyStudentDto:
     properties:
-      code:
-        type: string
-      createdBy:
-        type: string
-      createdTime:
-        type: string
-        format: date-time
-      hasAccess:
-        type: boolean
-        example: false
-        description: 当前操作者是否有此模块分配权限
       id:
-        type: integer
-        format: int32
-      isSelected:
-        type: boolean
-        example: false
-        description: 当前选定模块是否已经拥有
-      lastModifiedBy:
-        type: string
-      lastModifiedTime:
-        type: string
-        format: date-time
+        type: "string"
+        description: "主键"
+      sn:
+        type: "string"
+        description: "学员编号"
       name:
-        type: string
-      operateIp:
-        type: string
-      remark:
-        type: string
-      status:
-        type: integer
-        format: int32
-      userGroupId:
-        type: integer
-        format: int32
-  ResultVOJWTToken:
-    type: object
-    required:
-      - message
-      - status
-    properties:
-      data:
-        description: 数据
-        $ref: '#/definitions/JWTToken'
-      message:
-        type: string
-        example: success
-        description: 提示信息
-      status:
-        type: integer
-        format: int32
-        example: 200
-        description: 状态
-    description: '200:处理成功,400:参数不合法或业务校验未通过,401:需要认证,403:权限不足,500:未知错误'
-  ResultVOListLoginSiteListVO:
-    type: object
-    required:
-      - message
-      - status
-    properties:
-      data:
-        type: array
-        description: 数据
+        type: "string"
+        description: "学员名称"
+      avatar:
+        type: "string"
+        description: "学员头像"
+      gender:
+        type: "integer"
+        description: "性别.1男0女"
+      grade:
+        type: "string"
+        description: "年级"
+      school:
+        type: "string"
+        description: "学校"
+      address:
+        type: "string"
+        description: "家庭地址"
+      owner:
+        type: "string"
+        description: "负责人"
+
+  FamilySignsDto:
+     properties:
+      tags:
+        type: "array"
         items:
-          $ref: '#/definitions/LoginSiteListVO'
-      message:
-        type: string
-        example: success
-        description: 提示信息
-      status:
-        type: integer
-        format: int32
-        example: 200
-        description: 状态
-    description: '200:处理成功,400:参数不合法或业务校验未通过,401:需要认证,403:权限不足,500:未知错误'
-  ResultVOListMenuDTO:
-    type: object
-    required:
-      - message
-      - status
-    properties:
-      data:
-        type: array
-        description: 数据
+          type: "object"
+          properties:
+            id:
+              type: "string"
+              description: "主键"
+            parentTagId:
+              type: "string"
+              description: "标签组id"
+            name:
+              type: "string"
+              description: "名称"
+            style:
+              type: "string"
+              description: "所属标签组的style"
+      remarkTags:
+        type: "array"
         items:
-          $ref: '#/definitions/MenuDTO'
-      message:
-        type: string
-        example: success
-        description: 提示信息
-      status:
-        type: integer
-        format: int32
-        example: 200
-        description: 状态
-    description: '200:处理成功,400:参数不合法或业务校验未通过,401:需要认证,403:权限不足,500:未知错误'
-  ResultVOListMenuWithModuleDTO:
-    type: object
-    required:
-      - message
-      - status
-    properties:
-      data:
-        type: array
-        description: 数据
-        items:
-          $ref: '#/definitions/MenuWithModuleDTO'
-      message:
-        type: string
-        example: success
-        description: 提示信息
-      status:
-        type: integer
-        format: int32
-        example: 200
-        description: 状态
-    description: '200:处理成功,400:参数不合法或业务校验未通过,401:需要认证,403:权限不足,500:未知错误'
-  ResultVOListRoleSimpleVO:
-    type: object
-    required:
-      - message
-      - status
-    properties:
-      data:
-        type: array
-        description: 数据
-        items:
-          $ref: '#/definitions/RoleSimpleVO'
-      message:
-        type: string
-        example: success
-        description: 提示信息
-      status:
-        type: integer
-        format: int32
-        example: 200
-        description: 状态
-    description: '200:处理成功,400:参数不合法或业务校验未通过,401:需要认证,403:权限不足,500:未知错误'
-  ResultVOListUriDTO:
-    type: object
-    required:
-      - message
-      - status
-    properties:
-      data:
-        type: array
-        description: 数据
-        items:
-          $ref: '#/definitions/UriDTO'
-      message:
-        type: string
-        example: success
-        description: 提示信息
-      status:
-        type: integer
-        format: int32
-        example: 200
-        description: 状态
-    description: '200:处理成功,400:参数不合法或业务校验未通过,401:需要认证,403:权限不足,500:未知错误'
-  ResultVOListUserGroupDTO:
-    type: object
-    required:
-      - message
-      - status
-    properties:
-      data:
-        type: array
-        description: 数据
-        items:
-          $ref: '#/definitions/UserGroupDTO'
-      message:
-        type: string
-        example: success
-        description: 提示信息
-      status:
-        type: integer
-        format: int32
-        example: 200
-        description: 状态
-    description: '200:处理成功,400:参数不合法或业务校验未通过,401:需要认证,403:权限不足,500:未知错误'
-  ResultVOListUserGroupWithRoleDTO:
-    type: object
-    required:
-      - message
-      - status
-    properties:
-      data:
-        type: array
-        description: 数据
-        items:
-          $ref: '#/definitions/UserGroupWithRoleDTO'
-      message:
-        type: string
-        example: success
-        description: 提示信息
-      status:
-        type: integer
-        format: int32
-        example: 200
-        description: 状态
-    description: '200:处理成功,400:参数不合法或业务校验未通过,401:需要认证,403:权限不足,500:未知错误'
-  ResultVOListUserSimpleVO:
-    type: object
-    required:
-      - message
-      - status
-    properties:
-      data:
-        type: array
-        description: 数据
-        items:
-          $ref: '#/definitions/UserSimpleVO'
-      message:
-        type: string
-        example: success
-        description: 提示信息
-      status:
-        type: integer
-        format: int32
-        example: 200
-        description: 状态
-    description: '200:处理成功,400:参数不合法或业务校验未通过,401:需要认证,403:权限不足,500:未知错误'
-  'ResultVOMapstringint':
-    type: object
-    required:
-      - message
-      - status
-    properties:
-      data:
-        type: object
-        description: 数据
-        additionalProperties:
-          type: integer
-          format: int32
-      message:
-        type: string
-        example: success
-        description: 提示信息
-      status:
-        type: integer
-        format: int32
-        example: 200
-        description: 状态
-    description: '200:处理成功,400:参数不合法或业务校验未通过,401:需要认证,403:权限不足,500:未知错误'
-  ResultVOMenuDTO:
-    type: object
-    required:
-      - message
-      - status
-    properties:
-      data:
-        description: 数据
-        $ref: '#/definitions/MenuDTO'
-      message:
-        type: string
-        example: success
-        description: 提示信息
-      status:
-        type: integer
-        format: int32
-        example: 200
-        description: 状态
-    description: '200:处理成功,400:参数不合法或业务校验未通过,401:需要认证,403:权限不足,500:未知错误'
-  ResultVOModuleDTO:
-    type: object
-    required:
-      - message
-      - status
-    properties:
-      data:
-        description: 数据
-        $ref: '#/definitions/ModuleDTO'
-      message:
-        type: string
-        example: success
-        description: 提示信息
-      status:
-        type: integer
-        format: int32
-        example: 200
-        description: 状态
-    description: '200:处理成功,400:参数不合法或业务校验未通过,401:需要认证,403:权限不足,500:未知错误'
-  ResultVORoleDTO:
-    type: object
-    required:
-      - message
-      - status
-    properties:
-      data:
-        description: 数据
-        $ref: '#/definitions/RoleDTO'
-      message:
-        type: string
-        example: success
-        description: 提示信息
-      status:
-        type: integer
-        format: int32
-        example: 200
-        description: 状态
-    description: '200:处理成功,400:参数不合法或业务校验未通过,401:需要认证,403:权限不足,500:未知错误'
-  ResultVOUserGroupDTO:
-    type: object
-    required:
-      - message
-      - status
-    properties:
-      data:
-        description: 数据
-        $ref: '#/definitions/UserGroupDTO'
-      message:
-        type: string
-        example: success
-        description: 提示信息
-      status:
-        type: integer
-        format: int32
-        example: 200
-        description: 状态
-    description: '200:处理成功,400:参数不合法或业务校验未通过,401:需要认证,403:权限不足,500:未知错误'
-  ResultVOUserWithRelationshipsDTO:
-    type: object
-    required:
-      - message
-      - status
-    properties:
-      data:
-        description: 数据
-        $ref: '#/definitions/UserWithRelationshipsDTO'
-      message:
-        type: string
-        example: success
-        description: 提示信息
-      status:
-        type: integer
-        format: int32
-        example: 200
-        description: 状态
-    description: '200:处理成功,400:参数不合法或业务校验未通过,401:需要认证,403:权限不足,500:未知错误'
-  ResultVOUserWithUserGroupsDTO:
-    type: object
-    required:
-      - message
-      - status
-    properties:
-      data:
-        description: 数据
-        $ref: '#/definitions/UserWithUserGroupsDTO'
-      message:
-        type: string
-        example: success
-        description: 提示信息
-      status:
-        type: integer
-        format: int32
-        example: 200
-        description: 状态
-    description: '200:处理成功,400:参数不合法或业务校验未通过,401:需要认证,403:权限不足,500:未知错误'
-  ResultVOVoid:
-    type: object
-    required:
-      - message
-      - status
-    properties:
-      message:
-        type: string
-        example: success
-        description: 提示信息
-      status:
-        type: integer
-        format: int32
-        example: 200
-        description: 状态
-    description: '200:处理成功,400:参数不合法或业务校验未通过,401:需要认证,403:权限不足,500:未知错误'
-  RoleDTO:
-    type: object
-    properties:
-      createdBy:
-        type: string
-        description: 创建人
-      createdTime:
-        type: string
-        format: date-time
-        description: 创建时间
+          type: "object"
+          properties:
+            name:
+              type: "string"
+              description: "名称"
+
+  FamilySignsParam:
+     properties:
       id:
-        type: integer
-        format: int32
-      lastModifiedBy:
-        type: string
-        description: 修改人
-      lastModifiedTime:
-        type: string
-        format: date-time
-        description: 修改时间
-      name:
-        type: string
-        description: 角色名称
-      operateIp:
-        type: string
-        description: 操作者IP
-      remark:
-        type: string
-        description: 备注
-      status:
-        type: integer
-        format: int32
-        description: '状态,0:冻结,1:正常'
-      type:
-        type: integer
-        format: int32
-        description: 角色类型(预留)
-    description: 角色DTO
-  RoleMenusModulesParam:
-    type: object
-    properties:
-      menuWithModuleIds:
-        type: array
+        type: "string"
+        description: "家长记录id"
+      del:
+        type: "array"
         items:
-          $ref: '#/definitions/MenuWithModuleIds'
-      roleId:
-        type: integer
-        format: int32
-      userGroupId:
-        type: integer
-        format: int32
-    description: 为角色分配菜单
-  RoleParam:
-    type: object
-    required:
-      - code
-      - name
-    properties:
-      code:
-        type: string
-        description: 角色代码
-      id:
-        type: integer
-        format: int32
-      name:
-        type: string
-        description: 角色名称
-      remark:
-        type: string
-        description: 备注
-      userGroupId:
-        type: integer
-        format: int32
-        description: 用户组id
-    description: 角色参数
-  RoleSimpleVO:
-    type: object
-    properties:
-      code:
-        type: string
-      id:
-        type: integer
-        format: int32
-      name:
-        type: string
-      remark:
-        type: string
-  UgRoles:
-    type: object
-    required:
-      - roleIds
-      - userGroupId
-    properties:
-      roleIds:
-        type: array
-        description: 角色id数组
+          type: "object"
+          properties:
+            id:
+              type: "string"
+              description: "主键"
+            parentTagId:
+              type: "string"
+              description: "标签组id"
+            name:
+              type: "string"
+              description: "名称"
+            style:
+              type: "string"
+              description: "所属标签组的style"
+      add:
+        type: "array"
         items:
-          type: integer
-          format: int32
-      userGroupId:
-        type: integer
-        format: int32
-        description: 组织机构id
-  UriDTO:
-    type: object
+          type: "object"
+          properties:
+            id:
+              type: "string"
+              description: "主键"
+            parentTagId:
+              type: "string"
+              description: "标签组id"
+            name:
+              type: "string"
+              description: "名称"
+            style:
+              type: "string"
+              description: "所属标签组的style"
+
+  FamilySignsRemarkParam:
+     properties:
+      id:
+        type: "string"
+        description: "家长记录id"
+      del:
+        type: "array"
+        items:
+          type: "string"
+          description: "名称"
+      add:
+        type: "array"
+        items:
+          type: "string"
+          description: "名称"
+      tags:
+        type: "array"
+        items:
+          type: "string"
+          description: "新增备注标签数组"
+
+
+  FamilyPersonRecordDto:
     properties:
-      code:
-        type: string
+      title:
+        type: "string"
+        description: "相关动作"
       description:
-        type: string
-        description: 描述
-      id:
-        type: integer
-        format: int32
-      method:
-        type: string
-        description: Http method
-      name:
-        type: string
-      operation:
-        type: string
-        description: 操作
-      remark:
-        type: string
-        description: 备注
-      sequence:
-        type: integer
-        format: int32
-        description: 排序序列号
-      status:
-        type: integer
-        format: int32
-        description: '状态,0:冻结,1:正常'
-      uri:
-        type: string
-        description: 请求uri
-      userGroupId:
-        type: integer
-        format: int32
-  UserGroupDTO:
-    type: object
-    properties:
-      code:
-        type: string
-      companyCode:
-        type: string
-      companyName:
-        type: string
-      director:
-        type: string
-      fax:
-        type: string
-      id:
-        type: integer
-        format: int32
-        description: 自增id
-      lastModifiedBy:
-        type: string
-      lastModifiedTime:
-        type: string
-        format: date-time
-      level:
-        type: string
-        description: 层级
-      mobile:
-        type: string
-      name:
-        type: string
-      parentCode:
-        type: string
-      parentId:
-        type: integer
-        format: int32
-        description: 父级id
-      parentName:
-        type: string
-      parentType:
-        type: integer
-        format: int32
-      remark:
-        type: string
-      sequence:
-        type: integer
-        format: int32
-        description: 排序序列
-      subLevelDTOs:
-        type: array
-        description: 子级
-        items:
-          $ref: '#/definitions/LevelDTO'
-      telephone:
-        type: string
-      type:
-        type: integer
-        format: int32
-    description: 层级抽象实体
-  UserGroupParam:
-    type: object
-    required:
-      - code
-      - name
-      - parentId
-      - remark
-      - type
-    properties:
-      code:
-        type: string
-        description: 组织代码
-      director:
-        type: string
-        description: 负责人
-      fax:
-        type: string
-        description: 传真
-      id:
-        type: integer
-        format: int32
-      mobile:
-        type: string
-        description: 负责人电话
-      name:
-        type: string
-        description: 组织名称
-      parentId:
-        type: integer
-        format: int32
-        description: '父级id。如果是顶级,填0'
-      remark:
-        type: string
-        description: 备注
-      telephone:
-        type: string
-        description: 电话
-      type:
-        type: integer
-        format: int32
-        description: 用户组类型
-    description: 用户组参数
-  UserGroupWithRoleDTO:
-    type: object
-    properties:
-      code:
-        type: string
-      companyCode:
-        type: string
-      companyName:
-        type: string
-      director:
-        type: string
-      fax:
-        type: string
-      id:
-        type: integer
-        format: int32
-        description: 自增id
-      lastModifiedBy:
-        type: string
-      lastModifiedTime:
-        type: string
-        format: date-time
-      level:
-        type: string
-        description: 层级
-      mobile:
-        type: string
-      name:
-        type: string
-      parentCode:
-        type: string
-      parentId:
-        type: integer
-        format: int32
-        description: 父级id
-      parentName:
-        type: string
-      parentType:
-        type: integer
-        format: int32
-      remark:
-        type: string
-      roles:
-        type: array
-        items:
-          $ref: '#/definitions/RoleSimpleVO'
-      sequence:
-        type: integer
-        format: int32
-        description: 排序序列
-      subLevelDTOs:
-        type: array
-        description: 子级
-        items:
-          $ref: '#/definitions/LevelDTO'
-      telephone:
-        type: string
-      type:
-        type: integer
-        format: int32
-    description: 层级抽象实体
-  UserParam:
-    type: object
-    required:
-      - email
-      - mobileNumber
-      - nickname
-      - password
-      - status
-      - username
-    properties:
-      confirmPassword:
-        type: string
-      email:
-        type: string
-        example: test@test.com
-        description: 邮箱
-      id:
-        type: integer
-        format: int32
-        example: 2
-        description: 用户id
-      mobileNumber:
-        type: string
-        example: '18888888888'
-        description: 手机号
-      nickname:
-        type: string
-        example: 测试专用
-        description: 昵称
-      password:
-        type: string
-        example: '123456'
-        description: 密码
-      remark:
-        type: string
-        example: 测试专用账号
-        description: 备注
-      status:
-        type: integer
-        format: int32
-        example: 1
-        description: '用户状态,0:冻结,1:正常'
-      userGroupWithRoles:
-        type: array
-        items:
-          $ref: '#/definitions/UgRoles'
-      username:
-        type: string
-        example: test
-        description: 用户名
-  UserSimpleVO:
-    type: object
-    required:
-      - email
-      - mobileNumber
-      - nickname
-      - status
-      - username
-    properties:
-      email:
-        type: string
-        example: test@test.com
-        description: 邮箱
-      expiredTime:
-        type: string
-        format: date-time
-        example: '2019-12-31'
-        description: 账号有效期(未启用)
-      id:
-        type: integer
-        format: int32
-        description: 自增主键
-      mobileNumber:
-        type: string
-        example: '18888888888'
-        description: 手机号
-      nickname:
-        type: string
-        example: 测试专用
-        description: 用户名(昵称)
-      status:
-        type: integer
-        format: int32
-        description: '用户状态,0:冻结,1:正常'
-      username:
-        type: string
-        example: test
-        description: 账号
-    description: 用户简单对象
-  UserWithRelationshipsDTO:
-    type: object
-    required:
-      - email
-      - mobileNumber
-      - nickname
-      - status
-      - username
-    properties:
-      avatar:
-        type: string
-        format: byte
-        description: 头像
-      avatarContentType:
-        type: string
-        description: 头像类型
+        type: "string"
+        description: "描述"
+      createdAt:
+        type: "string"
+        description: "创建时间"
       createdBy:
-        type: string
-        example: system
-        description: 创建人
-      createdTime:
-        type: string
-        format: date-time
-        example: '2019-01-01 00:00:00'
-        description: 创建时间
-      email:
-        type: string
-        example: test@test.com
-        description: 邮箱
-      expiredTime:
-        type: string
-        format: date-time
-        example: '2019-12-31 00:00:00'
-        description: 账号有效期(未启用)
-      id:
-        type: integer
-        format: int32
-        example: 2
-        description: 用户id
-      lastModifiedBy:
-        type: string
-        example: system
-        description: 修改人
-      lastModifiedTime:
-        type: string
-        format: date-time
-        example: '2019-01-01 00:00:00'
-        description: 修改时间
-      mobileNumber:
-        type: string
-        example: '18888888888'
-        description: 手机号
-      nickname:
-        type: string
-        example: 测试专用
-        description: 昵称
-      operateIp:
-        type: string
-        example: 127.0.0.1
-        description: 操作者ip
-      remark:
-        type: string
-        example: 测试专用账号
-        description: 备注
-      roles:
-        type: array
-        description: 角色DTO数组
-        items:
-          $ref: '#/definitions/RoleDTO'
-      status:
-        type: integer
-        format: int32
-        description: '用户状态,0:冻结,1:正常'
-      userGroups:
-        type: array
-        description: 用户组DTO数组
-        items:
-          $ref: '#/definitions/UserGroupDTO'
-      username:
-        type: string
-        example: test
-        description: 用户名
-    description: 包含关系实体的用户DTO
-  UserWithRoleVO:
-    type: object
+        type: "string"
+        description: "操作人"
+
+  SearchNameDto:
     properties:
       id:
-        type: integer
-        format: int32
-        description: 用户自增主键
-      remark:
-        type: string
-        description: 备注
-      roleNames:
-        type: string
-        description: 角色名称
-      username:
-        type: string
-        description: 角色名称
-    description: 用户角色简单对象
-  UserWithUserGroupsDTO:
-    type: object
-    required:
-      - email
-      - mobileNumber
-      - nickname
-      - status
-      - username
-    properties:
+        type: "string"
+        description: "用户id"
+      name:
+        type: "string"
+        description: "用户名称"
       avatar:
-        type: string
-        format: byte
-        description: 头像
-      avatarContentType:
-        type: string
-        description: 头像类型
-      createdBy:
-        type: string
-        example: system
-        description: 创建人
-      createdTime:
-        type: string
-        format: date-time
-        example: '2019-01-01 00:00:00'
-        description: 创建时间
-      email:
-        type: string
-        example: test@test.com
-        description: 邮箱
-      expiredTime:
-        type: string
-        format: date-time
-        example: '2019-12-31 00:00:00'
-        description: 账号有效期(未启用)
+        type: "string"
+        description: "用户头像"
+
+  ConfigTagGroupInfoDto:
+    properties:
       id:
-        type: integer
-        format: int32
-        example: 2
-        description: 用户id
-      lastModifiedBy:
-        type: string
-        example: system
-        description: 修改人
-      lastModifiedTime:
-        type: string
-        format: date-time
-        example: '2019-01-01 00:00:00'
-        description: 修改时间
-      mobileNumber:
-        type: string
-        example: '18888888888'
-        description: 手机号
-      nickname:
-        type: string
-        example: 测试专用
-        description: 昵称
-      operateIp:
-        type: string
-        example: 127.0.0.1
-        description: 操作者ip
-      remark:
-        type: string
-        example: 测试专用账号
-        description: 备注
-      status:
-        type: integer
-        format: int32
-        description: '用户状态,0:冻结,1:正常'
-      userGroups:
-        type: array
-        description: 用户组
+        type: "string"
+        description: "主键"
+      name:
+        type: "string"
+        description: "标签组名称"
+      preId:
+        type: "string"
+        description: "前一个标签组的id"
+      isMultiple:
+        type: "string"
+        description: "是否可以多选"
+      style:
+        type: "string"
+        description: "样式"
+      tags:
+        type: "array"
         items:
-          $ref: '#/definitions/UserGroupDTO'
-      username:
-        type: string
-        example: test
-        description: 用户名
-    description: 包含用户组的用户对象
+          type: "object"
+          properties:
+            id:
+              type: "string"
+              description: "标签id"
+            name:
+              type: "string"
+              description: "标签名称"
+            preId:
+              type: "string"
+              description: "前一个标签的id"

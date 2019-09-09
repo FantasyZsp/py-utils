@@ -1,7 +1,7 @@
 import yaml
 import json
 
-with open('service.yml', 'r', encoding='UTF-8') as f:
+with open('test.yml', 'r', encoding='UTF-8') as f:
     data = yaml.safe_load(f)
 print(data)
 # print(json.dumps(data, ensure_ascii=False, indent=2))
@@ -49,35 +49,35 @@ for path in paths:
             if len(paramsArray) > 0:
                 # 构建请求参数表头
                 paramsHeader = '> Parameters\n' + '| Name  | Located in | Description | Required | Schema                                        |\n' \
-                                                  '| ----- | ---------- | ----------- | -------- | --------------------------------------------- |\n'
+                                                  '| ----- | ---------- | ----------- | -------- | --------------------------------------------- |'
                 print(paramsHeader)
                 # 构建请求参数具体内容
                 '''
                 | constKey | query      | 常量类型（学历：edu,学位：degree） | Yes      | string |
                 '''
                 for params in paramsArray:
-                    print('name==>' + params.get('name'))
+                    print('| ' + params.get('name'), end='')
                     inBody = params.get('in')
-                    print('Located in==>' + inBody)
+                    print('| ' + inBody, end='')
 
                     if inBody == 'query':
-                        print('Description==>' + params.get('description'))
-                        print(params.get('name'))
-                        print('Required==>', end='')
+                        print('| ' + params.get('description'), end='')
+
+                        print('| ', end='')
                         if params.get('required'):
-                            print(params.get('required'))
+                            print(params.get('required'), end='')
                         else:
                             print(False)
-                        print('Schema==>' + params.get('type'))
+                        print('| ' + params.get('type') + '                                        |', end='')
 
                     if inBody == 'body':
-                        if params.get('$ref'):
-                            print('Schema==>' + params.get('$ref'))
                         if params.get('description'):
-                            print('description==>' + params.get('description'))
-                        print('name==>' + params.get('name'))
+                            print('| ' + params.get('description'), end='')
+                        print('| ', end='')
                         if params.get('required'):
                             print(params.get('required'))
                         else:
-                            print('required==>' + False)
+                            print('False')
+                        if params.get('$ref'):
+                            print('| ' + params.get('$ref') + '                                        |', end='')
     # 构建响应信息
