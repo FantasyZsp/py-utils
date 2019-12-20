@@ -94,15 +94,8 @@ database = "avengers_zz"  # 数据库名
 databaseInfo = DbInfo(ip, username, password, database)
 
 tables = list_table(ip, username, password, database)  # 获取所有表，返回的是一个可迭代对象
-# print(tables)
-
-# for table in tables:
-#     col_names = list_col(localhost, username, password, database, table)
-#     print(col_names)  # 输出所有字段名
-
 template_content = fetch_template_content()
 
-i = 0
 # for table_name in tables:
 #     file_content = build_yml_file_content_case_map_all(template_content, table_name)
 #     file_path = build_yml_file_path(prefix, table_name)
