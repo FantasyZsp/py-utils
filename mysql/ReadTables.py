@@ -1,9 +1,19 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 # 列出所有表参考了下面的文档 https://blog.csdn.net/qq_33811662/article/details/80855430
+import os
+
 import pymysql
 import yaml
-import os
+
+from mysql.Etl import batch_etl
+
+
+def represent_none(self, _):
+    return self.represent_scalar('tag:yaml.org,2002:null', '')
+
+
+yaml.add_representer(type(None), represent_none)
 
 
 class DbInfo:
@@ -12,6 +22,15 @@ class DbInfo:
         self.username = username
         self.password = password
         self.database = database
+
+
+def build_dbinfo():
+    username = "root"  # 用户名
+    password = "123456"  # 连接密码
+    ip = "localhost"  # 连接地址
+    database = "avengers_zz"  # 数据库名
+    databaseInfo = DbInfo(ip, username, password, database)
+    return databaseInfo
 
 
 # 根据表名构建yml文件内容
@@ -80,29 +99,28 @@ def list_table(ip, username, password, database):
     return table_list
 
 
-def represent_none(self, _):
-    return self.represent_scalar('tag:yaml.org,2002:null', '')
+def batch_generate_yml_file():
+    prefix = 'D:/temp/pyyml/'
+    databaseInfo = build_dbinfo()
+    tables = list_table(databaseInfo.ip,
+                        databaseInfo.username,
+                        databaseInfo.password,
+                        databaseInfo.database)
+    template_content = fetch_template_content()
+
+    for table_name in tables:
+        column_names = list_col(databaseInfo, table_name)
+        file_content = build_yml_file_content_case_map_columns(template_content, table_name, column_names)
+        # file_content = build_yml_file_content_case_map_all(template_content, table_name) # mapAll模式
+        file_path = build_yml_file_path(prefix + 'colunms', table_name)
+        generate_yml_file(file_path, file_content)
 
 
-yaml.add_representer(type(None), represent_none)
+# batch_generate_yml_file()
 
-prefix = 'D:/temp/pyyml/'
-username = "root"  # 用户名
-password = "123456"  # 连接密码
-ip = "localhost"  # 连接地址
-database = "avengers_zz"  # 数据库名
-databaseInfo = DbInfo(ip, username, password, database)
-
-tables = list_table(ip, username, password, database)  # 获取所有表，返回的是一个可迭代对象
-template_content = fetch_template_content()
-
-# for table_name in tables:
-#     file_content = build_yml_file_content_case_map_all(template_content, table_name)
-#     file_path = build_yml_file_path(prefix, table_name)
-#     generate_yml_file(file_path, file_content)
-
-for table_name in tables:
-    column_names = list_col(databaseInfo, table_name)
-    file_content = build_yml_file_content_case_map_columns(template_content, table_name, column_names)
-    file_path = build_yml_file_path(prefix + 'colunms', table_name)
-    generate_yml_file(file_path, file_content)
+databaseInfo = build_dbinfo()
+tables = list_table(databaseInfo.ip,
+                    databaseInfo.username,
+                    databaseInfo.password,
+                    databaseInfo.database)
+batch_etl(tables)
