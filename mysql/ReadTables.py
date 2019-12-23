@@ -26,11 +26,11 @@ class DbInfo:
 
 
 def build_dbinfo():
-    username = "111"  # 用户名
-    password = "111"  # 连接密码
+    username = "canal"  # 用户名
+    password = "canal"  # 连接密码
     ip = "192.168.2.116"  # 连接地址
-    port = 3306  # 连接端口
-    database = "avengers1"  # 数据库名
+    port = 13306  # 连接端口
+    database = "avengers"  # 数据库名
     databaseInfo = DbInfo(ip, port, username, password, database)
     return databaseInfo
 
