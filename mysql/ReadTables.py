@@ -17,19 +17,21 @@ yaml.add_representer(type(None), represent_none)
 
 
 class DbInfo:
-    def __init__(self, ip, username, password, database):
+    def __init__(self, ip, port, username, password, database):
         self.ip = ip
+        self.port = port
         self.username = username
         self.password = password
         self.database = database
 
 
 def build_dbinfo():
-    username = "root"  # 用户名
-    password = "123456"  # 连接密码
-    ip = "localhost"  # 连接地址
-    database = "avengers_zz"  # 数据库名
-    databaseInfo = DbInfo(ip, username, password, database)
+    username = "111"  # 用户名
+    password = "111"  # 连接密码
+    ip = "192.168.2.116"  # 连接地址
+    port = 3306  # 连接端口
+    database = "avengers1"  # 数据库名
+    databaseInfo = DbInfo(ip, port, username, password, database)
     return databaseInfo
 
 
@@ -81,7 +83,13 @@ def fetch_template_content():
 
 
 def list_col(db_info: DbInfo, table_name):
-    db = pymysql.connect(db_info.ip, db_info.username, db_info.password, db_info.database, charset="utf8")
+    db = pymysql.connect(
+        host=db_info.ip,
+        port=db_info.port,
+        user=db_info.username,
+        password=db_info.password,
+        database=db_info.database,
+        charset="utf8")
     cursor = db.cursor()
     cursor.execute("select * from %s" % table_name)
     col_name_list = [tuple[0] for tuple in cursor.description]
@@ -90,8 +98,13 @@ def list_col(db_info: DbInfo, table_name):
 
 
 # 列出所有的表
-def list_table(ip, username, password, database):
-    db = pymysql.connect(ip, username, password, database, charset="utf8")
+def list_table(db_info: DbInfo):
+    db = pymysql.connect(host=db_info.ip,
+                         port=db_info.port,
+                         user=db_info.username,
+                         password=db_info.password,
+                         database=db_info.database,
+                         charset="utf8")
     cursor = db.cursor()
     cursor.execute("show tables")
     table_list = [tuple[0] for tuple in cursor.fetchall()]
@@ -102,10 +115,7 @@ def list_table(ip, username, password, database):
 def batch_generate_yml_file():
     prefix = 'D:/temp/pyyml/'
     databaseInfo = build_dbinfo()
-    tables = list_table(databaseInfo.ip,
-                        databaseInfo.username,
-                        databaseInfo.password,
-                        databaseInfo.database)
+    tables = list_table(databaseInfo)
     template_content = fetch_template_content()
 
     for table_name in tables:
@@ -116,11 +126,8 @@ def batch_generate_yml_file():
         generate_yml_file(file_path, file_content)
 
 
-# batch_generate_yml_file()
+batch_generate_yml_file()
 
 databaseInfo = build_dbinfo()
-tables = list_table(databaseInfo.ip,
-                    databaseInfo.username,
-                    databaseInfo.password,
-                    databaseInfo.database)
-batch_etl(tables)
+tables = list_table(databaseInfo)
+# batch_etl(tables)
