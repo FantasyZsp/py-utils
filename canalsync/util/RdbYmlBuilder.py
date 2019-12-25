@@ -5,7 +5,7 @@ import os
 
 import yaml
 
-from mysql.DBUtils import DbInfo
+from canalsync.util.DBUtils import DbInfo
 
 
 def represent_none(self, _):
@@ -71,7 +71,7 @@ def batch_generate_yml_file_test():
     database = "avengers_test"  # 数据库名
     databaseInfo = DbInfo.build(username, password, ip, port, database)
     tables = databaseInfo.list_table()
-    template_content = fetch_template_content('/template/template_content_test.yml')
+    template_content = fetch_template_content('./template_yml/template_content_test.yml')
 
     for table_name in tables:
         column_names = databaseInfo.list_col(table_name)
@@ -90,7 +90,7 @@ def batch_generate_yml_file_beta():
     database = "avengers"  # 数据库名
     databaseInfo = DbInfo.build(username, password, ip, port, database)
     tables = databaseInfo.list_table()
-    template_content = fetch_template_content('/template/template_content_beta.yml')
+    template_content = fetch_template_content('./template_yml/template_content_beta.yml')
 
     for table_name in tables:
         column_names = databaseInfo.list_col(table_name)
