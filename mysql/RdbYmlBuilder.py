@@ -6,7 +6,6 @@ import os
 import yaml
 
 from mysql.DBUtils import DbInfo
-from mysql.EtlUtils import batch_etl
 
 
 def represent_none(self, _):
@@ -17,7 +16,7 @@ yaml.add_representer(type(None), represent_none)
 
 
 # 根据表名构建yml文件内容
-def build_yml_file_content_case_map_all(template_content, table_name):
+def build_content_case_map_all(template_content, table_name):
     dbMapping = template_content.get('dbMapping')
     dbMapping.update({'table': table_name})
     dbMapping.update({'targetTable': table_name})
@@ -26,7 +25,7 @@ def build_yml_file_content_case_map_all(template_content, table_name):
 
 
 # 列名
-def build_yml_file_content_case_map_columns(template_content, table_name, column_names):
+def build_content_case_columns(template_content, table_name, column_names):
     dbMapping: dict = template_content.get('dbMapping')
     if dbMapping.get('mapAll', False):
         dbMapping.pop('mapAll')
@@ -38,7 +37,7 @@ def build_yml_file_content_case_map_columns(template_content, table_name, column
 
 
 # 构建yml文件名
-def build_yml_file_path(dir_path, table_name):
+def build_path(dir_path, table_name):
     if not dir_path[-1].__eq__('/'):
         dir_path = dir_path + '/'
 
@@ -71,9 +70,7 @@ def batch_generate_yml_file():
 
     for table_name in tables:
         column_names = databaseInfo.list_col(table_name)
-        file_content = build_yml_file_content_case_map_columns(template_content, table_name, column_names)
-        # file_content = build_yml_file_content_case_map_all(template_content, table_name) # mapAll模式
-        file_path = build_yml_file_path(prefix + 'colunms', 'test_' + table_name)
+        file_content = build_content_case_columns(template_content, table_name, column_names)
+        # file_content = build_content_case_map_all(template_content, table_name) # mapAll模式
+        file_path = build_path(prefix + 'colunms', 'test_' + table_name)
         generate_yml_file(file_path, file_content)
-
-

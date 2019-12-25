@@ -21,6 +21,11 @@ class DbInfo:
         databaseInfo = DbInfo(ip, port, username, password, database)
         return databaseInfo
 
+    @staticmethod
+    def build(username, password, ip, port, database):
+        databaseInfo = DbInfo(ip, port, username, password, database)
+        return databaseInfo
+
     # 列出所有的表
     def list_table(self):
         db = pymysql.connect(host=self.ip,

@@ -1,10 +1,16 @@
 # batch_generate_yml_file()
 #
 from mysql.DBUtils import DbInfo
-from mysql.EtlUtils import batch_etl
+from mysql.EtlUtils import batch_default
 
-databaseInfo = DbInfo.build_dbinfo()
+username = "canal"  # 用户名
+password = "canal"  # 连接密码
+ip = "192.168.2.116"  # 连接地址
+port = 13306  # 连接端口
+database = "avengers"  # 数据库名
+
+databaseInfo = DbInfo.build(username, password, ip, port, database)
 # 获取表名
 tables = databaseInfo.list_table(databaseInfo)
 # 同步
-batch_etl(tables)
+batch_default(tables)
