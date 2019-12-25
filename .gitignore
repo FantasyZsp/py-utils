@@ -26,3 +26,4 @@ logs/
 log/
 api-logs/
 api-log/
+mysql/__pycache__/

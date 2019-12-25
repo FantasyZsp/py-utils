@@ -65,7 +65,7 @@ def fetch_template_content():
 def batch_generate_yml_file():
     prefix = 'D:/temp/pyyml_test/'
     databaseInfo = DbInfo.build_dbinfo()
-    tables = databaseInfo.list_table(databaseInfo)
+    tables = databaseInfo.list_table()
     template_content = fetch_template_content()
 
     for table_name in tables:
