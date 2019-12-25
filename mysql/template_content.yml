@@ -1,10 +1,10 @@
-dataSourceKey: defaultDS
+dataSourceKey: avengers_test
 destination: example
 groupId: g1
-outerAdapterKey: mysql1
+outerAdapterKey: avengers_test_canal
 concurrent: true
 dbMapping:
-  database: avengers
+  database: avengers_test
   table: template_content
   targetTable: template_content
   targetPk:
