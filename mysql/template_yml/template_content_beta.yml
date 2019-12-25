@@ -1,0 +1,12 @@
+dataSourceKey: avengers
+destination: example
+groupId: g1
+outerAdapterKey: avengers_canal
+concurrent: true
+dbMapping:
+  database: avengers
+  table: template_content
+  targetTable: template_content
+  targetPk:
+    id: id
+  mapAll: true

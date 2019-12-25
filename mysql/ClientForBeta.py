@@ -2,6 +2,7 @@
 #
 from mysql.DBUtils import DbInfo
 from mysql.EtlUtils import batch_default
+from mysql.RdbYmlBuilder import batch_generate_yml_file_beta
 
 username = "canal"  # 用户名
 password = "canal"  # 连接密码
@@ -14,3 +15,6 @@ databaseInfo = DbInfo.build(username, password, ip, port, database)
 tables = databaseInfo.list_table()
 # 同步
 batch_default(tables)
+
+# 生成yml
+# batch_generate_yml_file_beta()

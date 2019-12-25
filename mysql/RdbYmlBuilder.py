@@ -54,23 +54,47 @@ def generate_yml_file(target_file_path, yml_content):
 
 
 # 获取模板内容
-def fetch_template_content():
-    with open('template_content.yml', 'r', encoding='UTF-8') as f:
+def fetch_template_content(filePath: str):
+    with open(filePath, 'r', encoding='UTF-8') as f:
         content = yaml.safe_load(f)
     print('template_content: ', end='')
     print(content)
     return content
 
 
-def batch_generate_yml_file():
+def batch_generate_yml_file_test():
     prefix = 'D:/temp/pyyml_test/'
-    databaseInfo = DbInfo.build_dbinfo()
+    username = "canal"  # 用户名
+    password = "canal"  # 连接密码
+    ip = "192.168.2.116"  # 连接地址
+    port = 13306  # 连接端口
+    database = "avengers_test"  # 数据库名
+    databaseInfo = DbInfo.build(username, password, ip, port, database)
     tables = databaseInfo.list_table()
-    template_content = fetch_template_content()
+    template_content = fetch_template_content('/template/template_content_test.yml')
 
     for table_name in tables:
         column_names = databaseInfo.list_col(table_name)
         file_content = build_content_case_columns(template_content, table_name, column_names)
         # file_content = build_content_case_map_all(template_content, table_name) # mapAll模式
         file_path = build_path(prefix + 'colunms', 'test_' + table_name)
+        generate_yml_file(file_path, file_content)
+
+
+def batch_generate_yml_file_beta():
+    prefix = 'D:/temp/pyyml_beta/'
+    username = "canal"  # 用户名
+    password = "canal"  # 连接密码
+    ip = "192.168.2.116"  # 连接地址
+    port = 13306  # 连接端口
+    database = "avengers"  # 数据库名
+    databaseInfo = DbInfo.build(username, password, ip, port, database)
+    tables = databaseInfo.list_table()
+    template_content = fetch_template_content('/template/template_content_beta.yml')
+
+    for table_name in tables:
+        column_names = databaseInfo.list_col(table_name)
+        file_content = build_content_case_columns(template_content, table_name, column_names)
+        # file_content = build_content_case_map_all(template_content, table_name) # mapAll模式
+        file_path = build_path(prefix + 'colunms', table_name)
         generate_yml_file(file_path, file_content)
