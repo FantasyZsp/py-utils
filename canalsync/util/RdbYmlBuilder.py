@@ -75,8 +75,8 @@ def batch_generate_yml_file_test():
 
     for table_name in tables:
         column_names = databaseInfo.list_col(table_name)
-        file_content = build_content_case_columns(template_content, table_name, column_names)
-        # file_content = build_content_case_map_all(template_content, table_name) # mapAll模式
+        # file_content = build_content_case_columns(template_content, table_name, column_names)
+        file_content = build_content_case_map_all(template_content, table_name) # mapAll模式
         file_path = build_path(prefix + 'colunms', 'test_' + table_name)
         generate_yml_file(file_path, file_content)
 
@@ -94,7 +94,7 @@ def batch_generate_yml_file_beta():
 
     for table_name in tables:
         column_names = databaseInfo.list_col(table_name)
-        file_content = build_content_case_columns(template_content, table_name, column_names)
-        # file_content = build_content_case_map_all(template_content, table_name) # mapAll模式
+        # file_content = build_content_case_columns(template_content, table_name, column_names)
+        file_content = build_content_case_map_all(template_content, table_name) # mapAll模式
         file_path = build_path(prefix + 'colunms', table_name)
         generate_yml_file(file_path, file_content)

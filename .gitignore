@@ -27,3 +27,4 @@ log/
 api-logs/
 api-log/
 canalsync/__pycache__/
+canalsync/util/__pycache__/
