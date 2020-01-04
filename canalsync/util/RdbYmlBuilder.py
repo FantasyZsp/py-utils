@@ -5,7 +5,7 @@ import os
 
 import yaml
 
-from canalsync.util.DBUtils import DbInfo
+from canalsync.util.MyDBUtils import DBPool
 
 
 def represent_none(self, _):
@@ -69,14 +69,14 @@ def batch_generate_yml_file_test():
     ip = "192.168.2.116"  # 连接地址
     port = 13306  # 连接端口
     database = "avengers_test"  # 数据库名
-    databaseInfo = DbInfo.build(username, password, ip, port, database)
+    databaseInfo = DBPool.build(username, password, ip, port, database)
     tables = databaseInfo.list_table()
     template_content = fetch_template_content('./template_yml/template_content_test.yml')
 
     for table_name in tables:
         column_names = databaseInfo.list_col(table_name)
         # file_content = build_content_case_columns(template_content, table_name, column_names)
-        file_content = build_content_case_map_all(template_content, table_name) # mapAll模式
+        file_content = build_content_case_map_all(template_content, table_name)  # mapAll模式
         file_path = build_path(prefix + 'colunms', 'test_' + table_name)
         generate_yml_file(file_path, file_content)
 
@@ -88,13 +88,13 @@ def batch_generate_yml_file_beta():
     ip = "192.168.2.116"  # 连接地址
     port = 13306  # 连接端口
     database = "avengers"  # 数据库名
-    databaseInfo = DbInfo.build(username, password, ip, port, database)
+    databaseInfo = DBPool.build(username, password, ip, port, database)
     tables = databaseInfo.list_table()
     template_content = fetch_template_content('./template_yml/template_content_beta.yml')
 
     for table_name in tables:
         column_names = databaseInfo.list_col(table_name)
         # file_content = build_content_case_columns(template_content, table_name, column_names)
-        file_content = build_content_case_map_all(template_content, table_name) # mapAll模式
+        file_content = build_content_case_map_all(template_content, table_name)  # mapAll模式
         file_path = build_path(prefix + 'colunms', table_name)
         generate_yml_file(file_path, file_content)

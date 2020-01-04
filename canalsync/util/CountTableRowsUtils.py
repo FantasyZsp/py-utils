@@ -1,5 +1,13 @@
-from canalsync.util.DBUtils import DbInfo
+from canalsync.util.MyDBUtils import DBPool
 
-dbinfo = DbInfo.build('canal', 'canal', '192.168.2.116', 13306, 'avengers')
-results = dbinfo.count_table_rows('call_record')
-print(results)
+dbinfo = DBPool.build('root', '123456', 'localhost', 3306, 'dbgirl')
+results = dbinfo.count_table_rows('girl')
+results2 = dbinfo.list_all_col()
+print(results2)
+try:
+    for res in results2:
+        print(res)
+except Exception as e:
+    print("error: ", e)
+
+print("=====end=====")
