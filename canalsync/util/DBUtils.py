@@ -47,9 +47,9 @@ class DbInfo:
         db = self.connect()
         cursor = db.cursor()
         cursor.execute("select count(*) as %s from %s" % (self.database + '_' + table_name, table_name))
-        countNum = [tuple[0] for tuple in cursor.description]
+        countNum = cursor.fetchall()
         db.close()
-        return countNum
+        return countNum[0]
 
     def connect(self):
         db = pymysql.connect(
