@@ -28,12 +28,7 @@ class DbInfo:
 
     # 列出所有的表
     def list_table(self):
-        db = pymysql.connect(host=self.ip,
-                             port=self.port,
-                             user=self.username,
-                             password=self.password,
-                             database=self.database,
-                             charset="utf8")
+        db = self.connect()
         cursor = db.cursor()
         cursor.execute("show tables")
         table_list = [tuple[0] for tuple in cursor.fetchall()]
@@ -41,6 +36,22 @@ class DbInfo:
         return table_list
 
     def list_col(self, table_name):
+        db = self.connect()
+        cursor = db.cursor()
+        cursor.execute("select * from %s" % table_name)
+        col_name_list = [tuple[0] for tuple in cursor.description]
+        db.close()
+        return col_name_list
+
+    def count_table_rows(self, table_name: str):
+        db = self.connect()
+        cursor = db.cursor()
+        cursor.execute("select count(*) as %s from %s" % (self.database + '_' + table_name, table_name))
+        countNum = [tuple[0] for tuple in cursor.description]
+        db.close()
+        return countNum
+
+    def connect(self):
         db = pymysql.connect(
             host=self.ip,
             port=self.port,
@@ -48,8 +59,4 @@ class DbInfo:
             password=self.password,
             database=self.database,
             charset="utf8")
-        cursor = db.cursor()
-        cursor.execute("select * from %s" % table_name)
-        col_name_list = [tuple[0] for tuple in cursor.description]
-        db.close()
-        return col_name_list
+        return db
