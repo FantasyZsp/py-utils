@@ -110,7 +110,12 @@ class DBPool:
         return [description[0][0], countNum[0][0]]
 
     def count_all_tables(self):
-        self.list_table()
+        tableNames = self.list_table()
+        results = []
+        for tableName in tableNames:
+            result = self.count_table_rows(tableName)
+            results.extend(result)
+        return results
 
     def query(self, sql: str):
         connection = self.pool_connect()
