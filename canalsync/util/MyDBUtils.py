@@ -144,3 +144,47 @@ class DBPool:
         connection.commit()
         DBPool.close_all(cursor, connection)
         return description, results
+
+        # 获取别名和count结果
+
+    def count_mater_slave_table_rows(self, master_database: str, slave_database: str, table_name: str):
+        connection = self.connect()
+        cursor = connection.cursor()
+        sql = "select count(*) as %s from %s" % (
+            master_database + '_' + table_name, master_database + '.' + table_name)
+        sql_slave = "select count(*) as %s from %s" % (
+            slave_database + '_' + table_name, slave_database + '.' + table_name)
+        print(sql)
+        print(sql_slave)
+        cursor.execute(sql)
+        description = cursor.description
+        countNum = cursor.fetchall()
+
+        cursor.execute(sql_slave)
+        description_slave = cursor.description
+        countNum_slave = cursor.fetchall()
+        DBPool.close_all(cursor, connection)
+        return [description[0][0], countNum[0][0], description_slave[0][0], countNum_slave[0][0]]
+
+    def count_mater_slave_all_tables_rows(self, master_database: str, slave_database: str):
+        connection = self.connect()
+        tableNames = self.list_table()
+        cursor = connection.cursor()
+        results = []
+        for table_name in tableNames:
+            sql = "select count(*) as %s from %s" % (
+                master_database + '_' + table_name, master_database + '.' + table_name)
+            sql_slave = "select count(*) as %s from %s" % (
+                slave_database + '_' + table_name, slave_database + '.' + table_name)
+            # print(sql)
+            # print(sql_slave)
+            cursor.execute(sql)
+            description = cursor.description
+            countNum = cursor.fetchall()
+
+            cursor = connection.cursor()
+            cursor.execute(sql_slave)
+            description_slave = cursor.description
+            countNum_slave = cursor.fetchall()
+            results.extend([description[0][0], description_slave[0][0], countNum[0][0], countNum_slave[0][0]])
+        return results
