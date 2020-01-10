@@ -1,7 +1,7 @@
 dataSourceKey: avengers
 destination: example
 groupId: g1
-outerAdapterKey: avengers_canal
+outerAdapterKey: miracle
 concurrent: true
 dbMapping:
   database: avengers
