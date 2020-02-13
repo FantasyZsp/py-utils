@@ -1,8 +1,8 @@
 dataSourceKey: avengers_test
 destination: example
 groupId: g1
-outerAdapterKey: avengers_test_canal
-concurrent: true
+outerAdapterKey: miracle_test
+concurrent: false
 dbMapping:
   database: avengers_test
   table: template_content
