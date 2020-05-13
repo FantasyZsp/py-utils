@@ -2,7 +2,7 @@ dataSourceKey: avengers
 destination: example
 groupId: g1
 outerAdapterKey: miracle
-concurrent: true
+concurrent: false
 dbMapping:
   database: avengers
   table: template_content

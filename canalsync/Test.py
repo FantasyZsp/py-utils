@@ -12,10 +12,8 @@ database = "avengers"  # 数据库名
 databaseInfo = DBPool.build(username, password, ip, port, database)
 # 获取表名
 tables = databaseInfo.list_table()
-# 同步
-# batch_default(tables)
 
-# 生成yml
-batch_generate_yml_file_beta()
-
-
+# 获取表的主键属性名
+for table_name in tables:
+    column = databaseInfo.get_primary_key_name(table_name, database)
+    print(column)

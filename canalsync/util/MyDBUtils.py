@@ -75,116 +75,141 @@ class DBPool:
         connection.close()
         return col_name_list
 
-    def list_all_col(self):
-        tables = self.list_table()
-        for table_name in tables:
-            column_names = self.list_col(table_name)
-            print(table_name, end='=======')
-            print(column_names)
-
-    def count_table_rows_fetchall(self, table_name: str):
-        sql = "select count(*) as %s from %s" % (self.database + '_' + table_name, table_name)
-        print(sql)
-        return self.query(sql)
-
-    def count_table_rows_description(self, table_name: str):
+    def get_primary_key_name(self, table_name: str, db_name: str):
         connection = self.connect()
         cursor = connection.cursor()
-        sql = "select count(*) as %s from %s" % (self.database + '_' + table_name, table_name)
+        sql = "select COLUMN_NAME from information_schema.COLUMNS tb " \
+              "where tb.`TABLE_SCHEMA` = '%s' " \
+              "and tb.TABLE_NAME = '%s' " \
+              "and COLUMN_KEY = 'PRI'" % (
+                  db_name, table_name)
         print(sql)
         cursor.execute(sql)
-        countNum2 = cursor.description
-        DBPool.close_all(cursor, connection)
-        return countNum2
+        pri = cursor.fetchone()[0]
+        cursor.close()
+        connection.close()
+        return pri
+
+
+def list_all_col(self):
+    tables = self.list_table()
+    for table_name in tables:
+        column_names = self.list_col(table_name)
+        print(table_name, end='=======')
+        print(column_names)
+
+
+def count_table_rows_fetchall(self, table_name: str):
+    sql = "select count(*) as %s from %s" % (self.database + '_' + table_name, table_name)
+    print(sql)
+    return self.query(sql)
+
+
+def count_table_rows_description(self, table_name: str):
+    connection = self.connect()
+    cursor = connection.cursor()
+    sql = "select count(*) as %s from %s" % (self.database + '_' + table_name, table_name)
+    print(sql)
+    cursor.execute(sql)
+    countNum2 = cursor.description
+    DBPool.close_all(cursor, connection)
+    return countNum2
+
+
+# 获取别名和count结果
+def count_table_rows(self, table_name: str):
+    connection = self.connect()
+    cursor = connection.cursor()
+    sql = "select count(*) as %s from %s" % (self.database + '_' + table_name, table_name)
+    print(sql)
+    cursor.execute(sql)
+    description = cursor.description
+    countNum = cursor.fetchall()
+    DBPool.close_all(cursor, connection)
+    return [description[0][0], countNum[0][0]]
+
+
+def count_all_tables(self):
+    tableNames = self.list_table()
+    results = []
+    for tableName in tableNames:
+        result = self.count_table_rows(tableName)
+        results.extend(result)
+    return results
+
+
+def query(self, sql: str):
+    connection = self.pool_connect()
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    results = cursor.fetchall()
+    connection.commit()
+    DBPool.close_all(cursor, connection)
+    return results
+
+
+def execute(self, sql: str):
+    connection = self.pool_connect()
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    results = cursor.fetchall()
+    connection.commit()
+    DBPool.close_all(cursor, connection)
+    return results
+
+
+def query_description_fetchall(self, sql: str):
+    connection = self.pool_connect()
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    description = cursor.description
+    results = cursor.fetchall()
+    connection.commit()
+    DBPool.close_all(cursor, connection)
+    return description, results
 
     # 获取别名和count结果
-    def count_table_rows(self, table_name: str):
-        connection = self.connect()
-        cursor = connection.cursor()
-        sql = "select count(*) as %s from %s" % (self.database + '_' + table_name, table_name)
-        print(sql)
-        cursor.execute(sql)
-        description = cursor.description
-        countNum = cursor.fetchall()
-        DBPool.close_all(cursor, connection)
-        return [description[0][0], countNum[0][0]]
 
-    def count_all_tables(self):
-        tableNames = self.list_table()
-        results = []
-        for tableName in tableNames:
-            result = self.count_table_rows(tableName)
-            results.extend(result)
-        return results
 
-    def query(self, sql: str):
-        connection = self.pool_connect()
-        cursor = connection.cursor()
-        cursor.execute(sql)
-        results = cursor.fetchall()
-        connection.commit()
-        DBPool.close_all(cursor, connection)
-        return results
+def count_mater_slave_table_rows(self, master_database: str, slave_database: str, table_name: str):
+    connection = self.connect()
+    cursor = connection.cursor()
+    sql = "select count(*) as %s from %s" % (
+        master_database + '_' + table_name, master_database + '.' + table_name)
+    sql_slave = "select count(*) as %s from %s" % (
+        slave_database + '_' + table_name, slave_database + '.' + table_name)
+    print(sql)
+    print(sql_slave)
+    cursor.execute(sql)
+    description = cursor.description
+    countNum = cursor.fetchall()
 
-    def execute(self, sql: str):
-        connection = self.pool_connect()
-        cursor = connection.cursor()
-        cursor.execute(sql)
-        results = cursor.fetchall()
-        connection.commit()
-        DBPool.close_all(cursor, connection)
-        return results
+    cursor.execute(sql_slave)
+    description_slave = cursor.description
+    countNum_slave = cursor.fetchall()
+    DBPool.close_all(cursor, connection)
+    return [description[0][0], countNum[0][0], description_slave[0][0], countNum_slave[0][0]]
 
-    def query_description_fetchall(self, sql: str):
-        connection = self.pool_connect()
-        cursor = connection.cursor()
-        cursor.execute(sql)
-        description = cursor.description
-        results = cursor.fetchall()
-        connection.commit()
-        DBPool.close_all(cursor, connection)
-        return description, results
 
-        # 获取别名和count结果
-
-    def count_mater_slave_table_rows(self, master_database: str, slave_database: str, table_name: str):
-        connection = self.connect()
-        cursor = connection.cursor()
+def count_mater_slave_all_tables_rows(self, master_database: str, slave_database: str):
+    connection = self.connect()
+    tableNames = self.list_table()
+    cursor = connection.cursor()
+    results = []
+    for table_name in tableNames:
         sql = "select count(*) as %s from %s" % (
             master_database + '_' + table_name, master_database + '.' + table_name)
         sql_slave = "select count(*) as %s from %s" % (
             slave_database + '_' + table_name, slave_database + '.' + table_name)
-        print(sql)
-        print(sql_slave)
+        # print(sql)
+        # print(sql_slave)
         cursor.execute(sql)
         description = cursor.description
         countNum = cursor.fetchall()
 
+        cursor = connection.cursor()
         cursor.execute(sql_slave)
         description_slave = cursor.description
         countNum_slave = cursor.fetchall()
-        DBPool.close_all(cursor, connection)
-        return [description[0][0], countNum[0][0], description_slave[0][0], countNum_slave[0][0]]
-
-    def count_mater_slave_all_tables_rows(self, master_database: str, slave_database: str):
-        connection = self.connect()
-        tableNames = self.list_table()
-        cursor = connection.cursor()
-        results = []
-        for table_name in tableNames:
-            sql = "select count(*) as %s from %s" % (
-                master_database + '_' + table_name, master_database + '.' + table_name)
-            sql_slave = "select count(*) as %s from %s" % (
-                slave_database + '_' + table_name, slave_database + '.' + table_name)
-            # print(sql)
-            # print(sql_slave)
-            cursor.execute(sql)
-            description = cursor.description
-            countNum = cursor.fetchall()
-
-            cursor = connection.cursor()
-            cursor.execute(sql_slave)
-            description_slave = cursor.description
-            countNum_slave = cursor.fetchall()
-            results.extend([description[0][0], description_slave[0][0], countNum[0][0], countNum_slave[0][0]])
-        return results
+        results.extend([description[0][0], description_slave[0][0], countNum[0][0], countNum_slave[0][0]])
+    return results

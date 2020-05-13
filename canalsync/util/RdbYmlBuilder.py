@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 # 列出所有表参考了下面的文档 https://blog.csdn.net/qq_33811662/article/details/80855430
 import os
-
+import copy
 import yaml
 
 from canalsync.util.MyDBUtils import DBPool
@@ -16,15 +16,20 @@ yaml.add_representer(type(None), represent_none)
 
 
 # 根据表名构建yml文件内容
-def build_content_case_map_all(template_content, table_name):
-    dbMapping = template_content.get('dbMapping')
+# template_content深度拷贝
+def build_content_case_map_all(template_content, table_name, primary_key_name):
+    tmp_template_content = copy.deepcopy(template_content)
+    dbMapping = tmp_template_content.get('dbMapping')
     dbMapping.update({'table': table_name})
     dbMapping.update({'targetTable': table_name})
+    targetPk = dbMapping.get('targetPk')
+    targetPk.clear()
+    targetPk[primary_key_name] = primary_key_name
     # template_content.__setitem__('dbMapping', dbMapping)
-    return template_content
+    return tmp_template_content
 
 
-# 列名
+# 列名 TODO 主键
 def build_content_case_columns(template_content, table_name, column_names):
     dbMapping: dict = template_content.get('dbMapping')
     if dbMapping.get('mapAll', False):
@@ -76,8 +81,9 @@ def batch_generate_yml_file_test():
     for table_name in tables:
         column_names = databaseInfo.list_col(table_name)
         # file_content = build_content_case_columns(template_content, table_name, column_names)
-        file_content = build_content_case_map_all(template_content, table_name)  # mapAll模式
-        file_path = build_path(prefix + 'colunms', 'test_' + table_name)
+        primary_key_name = databaseInfo.get_primary_key_name(table_name, database)
+        file_content = build_content_case_map_all(template_content, table_name, primary_key_name)  # mapAll模式
+        file_path = build_path(prefix + 'mapAll', 'test_' + table_name)
         generate_yml_file(file_path, file_content)
 
 
@@ -93,8 +99,9 @@ def batch_generate_yml_file_beta():
     template_content = fetch_template_content('./template_yml/template_content_beta.yml')
 
     for table_name in tables:
-        column_names = databaseInfo.list_col(table_name)
+        # column_names = databaseInfo.list_col(table_name)
         # file_content = build_content_case_columns(template_content, table_name, column_names)
-        file_content = build_content_case_map_all(template_content, table_name)  # mapAll模式
-        file_path = build_path(prefix + 'colunms', table_name)
+        primary_key_name = databaseInfo.get_primary_key_name(table_name, database)
+        file_content = build_content_case_map_all(template_content, table_name, primary_key_name)  # mapAll模式
+        file_path = build_path(prefix + 'mapAll', table_name)
         generate_yml_file(file_path, file_content)
