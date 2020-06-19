@@ -13,8 +13,7 @@ def count_all_table(user: str, pw: str, ip: str, port: int, db: str):
 
 def find_error_sync():
     dbinfo = DBPool.build('canal', 'canal', '192.168.2.116', 13306, 'avengers')
-    results = dbinfo.count_mater_slave_all_tables_rows(
-        'avengers', 'miracle')
+    results = dbinfo.count_mater_slave_all_tables_rows('avengers', 'miracle')
 
     a = 0
     b = 0
