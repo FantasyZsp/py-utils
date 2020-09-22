@@ -202,7 +202,7 @@ class DBPool:
             try:
                 cursor.execute(sql_slave)
             except BaseException:
-                print(table_name + " maybe not in " + slave_database)
+                # print(table_name + " maybe not in " + slave_database)
                 errorTable.append(table_name)
                 continue
             else:
@@ -210,4 +210,5 @@ class DBPool:
                 countNum_slave = cursor.fetchall()
                 results.extend([description[0][0], description_slave[0][0], countNum[0][0], countNum_slave[0][0]])
         print("error table : " + errorTable.__str__())
+        print("error table size: %d" % len(errorTable))
         return results
