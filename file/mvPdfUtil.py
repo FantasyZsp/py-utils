@@ -50,7 +50,7 @@ if __name__ == '__main__':
     '''
     获取命令行参数，必须拥有 要探测的绝对目录、需要移动的文件后缀
     '''
-
+    print(os.sep)
     parser = argparse.ArgumentParser(description='移动指定后缀的文件到特定目录')
     parser.add_argument('-f', '--from', required=True)
     parser.add_argument('-s', '--suffix', default='pdf', choices=['pdf', 'html', 'mp3'])
@@ -66,13 +66,14 @@ if __name__ == '__main__':
         print('fromDir is not a valid path')
         exit()
 
+    currentPath = os.getcwd()
+    fromDirName = os.sep + os.path.basename(fromDir) + '-' + suffix.upper()
     if destDir.__eq__('current'):
-        currentPath = os.getcwd()
-        currentDirName = os.path.basename(fromDir) + '-' + suffix.upper()
-        print(currentPath)
-        print(currentDirName)
-        destDir = './' + currentDirName + '/'
-
+        print('currentPath: ' + currentPath)
+        print('fromDirName: ' + fromDirName)
+        destDir = '.' + fromDirName + os.sep
+    else:
+        destDir = destDir + fromDirName + os.sep
     if not os.path.exists(destDir):
         os.makedirs(destDir)
     print('files will save to ' + destDir)
