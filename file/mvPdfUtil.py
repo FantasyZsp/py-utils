@@ -33,7 +33,7 @@ def get_items(from_dir, dest_dir, file_suffix, level=0, sub_index=''):
             reStr = r'^.*(\.' + file_suffix + ')$'
             if re.match(reStr, basename) is not None:
                 # 匹配以 .file_suffix 结尾的所有文件
-                newname = str(list_num) + '_' + basename
+                newname = str(list_num).zfill(3) + '_' + basename
                 # newname = basename
                 # 重命名可以重写
                 direct_file_name = os.path.join(dest_dir, newname)
