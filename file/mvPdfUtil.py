@@ -59,21 +59,35 @@ if __name__ == '__main__':
     kvs = vars(args)
     print(kvs)
     fromDir = kvs.get('from')
+    if fromDir[-1] == os.sep:
+        fromDir = fromDir[:-1]
+    print('arg fromDir:' + fromDir)
+
     suffix: str = kvs.get('suffix')
     destDir: str = kvs.get('destDir')
+    if destDir[-1] == os.sep:
+        destDir = destDir[:-1]
+    print('arg destDir:' + destDir)
 
     if not os.path.exists(fromDir):
         print('fromDir is not a valid path')
         exit()
 
     currentPath = os.getcwd()
-    fromDirName = os.sep + os.path.basename(fromDir) + '-' + suffix.upper()
+    defaultDirName = os.path.basename(fromDir) + '-' + suffix.upper()  # 目的文件夹名字： dirName-SUFFIX
+    print('currentPath: ' + currentPath)
+    print('dirName: ' + defaultDirName)
+
     if destDir.__eq__('current'):
-        print('currentPath: ' + currentPath)
-        print('fromDirName: ' + fromDirName)
-        destDir = '.' + fromDirName + os.sep
+        destDir = '.' + os.sep + defaultDirName
+
+    elif destDir.__eq__('from'):
+        destDir = fromDir + os.sep + defaultDirName
     else:
-        destDir = destDir + fromDirName + os.sep
+        destDir = destDir + os.sep + defaultDirName
+
+    print('final destDir: ' + destDir)
+
     if not os.path.exists(destDir):
         os.makedirs(destDir)
     print('files will save to ' + destDir)
