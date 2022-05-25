@@ -1,7 +1,7 @@
 import pymysql
 from DBUtils.PooledDB import PooledDB
 
-# DBUtil
+# DBUtil version 1.3
 # 用于连接数据库，查询数据库源数据
 from pymysql.connections import Connection
 from pymysql.cursors import Cursor
